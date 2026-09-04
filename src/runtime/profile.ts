@@ -194,6 +194,21 @@ export function rescueDshBundles(profileName: string = 'web'): number {
         continue
       }
 
+      // 1. 明确黑名单：纯类型库或普通运行时库坚决不能进入 dsh.profile.bundles（保留在 dependencies）
+      if (
+        b === 'types-js-yaml' ||
+        b.startsWith('@types/') ||
+        b.endsWith('-types') ||
+        b === 'js-yaml' ||
+        b === 'tslib' ||
+        b === 'yaml'
+      ) {
+        modified = true
+        fixed++
+        console.log(`[dsh-stream-market] 🛡️ 拦截并从 bundles 剔除非 bundle 依赖: ${b} (安全保留在 dependencies)`)
+        continue
+      }
+
       // 检查插件路径
       let bDir = join(profileDir, 'node_modules', b)
       const dep = pkg.dependencies?.[b] || pkg.devDependencies?.[b]
@@ -209,12 +224,30 @@ export function rescueDshBundles(profileName: string = 'web'): number {
         // 幽灵 bundle，目录不存在，移除避免启动崩溃
         modified = true
         fixed++
+        console.log(`[dsh-stream-market] 🛡️ 剔除不存在的幽灵 bundle: ${b}`)
         continue
       }
 
       try {
         const bPkg = JSON.parse(readFileSync(bPkgPath, 'utf-8'))
         const patchFile = join(bDir, 'cordis.patch.yml')
+        const clientFile = join(bDir, 'client.js')
+
+        // 判断是否属于 DSH 插件扩展
+        const isDshPlugin =
+          b.startsWith('dsh-') ||
+          b.includes('/dsh-') ||
+          bPkg.dsh !== undefined ||
+          existsSync(patchFile) ||
+          existsSync(clientFile)
+
+        if (!isDshPlugin) {
+          // 该包为普通依赖项（非 DSH 扩展），从 bundles 剔除，保留在 dependencies
+          modified = true
+          fixed++
+          console.log(`[dsh-stream-market] 🛡️ 剔除普通依赖库: ${b} (非 DSH bundle)`)
+          continue
+        }
 
         if (!bPkg.dsh?.bundle?.patch) {
           if (!existsSync(patchFile)) {

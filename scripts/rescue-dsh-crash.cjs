@@ -47,6 +47,14 @@ for (const profile of profiles) {
       continue;
     }
 
+    // 纯类型或非 bundle 依赖严禁进入 profile bundles
+    if (bundleName === 'types-js-yaml' || bundleName.startsWith('@types/')) {
+      console.log(`ℹ️ [${bundleName}] 为非 bundle 依赖项，已从 bundles 过滤，安全保留在 dependencies 中。`);
+      modified = true;
+      totalFixed++;
+      continue;
+    }
+
     // 定位该 bundle 的真实安装路径
     let bundleDir = path.join(profileDir, 'node_modules', bundleName);
     const depVal = pkg.dependencies?.[bundleName] || pkg.devDependencies?.[bundleName];

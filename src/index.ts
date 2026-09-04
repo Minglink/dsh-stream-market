@@ -1,5 +1,6 @@
 import { fileURLToPath } from 'node:url'
 import { MarketBridgeServer } from './bridge/server.js'
+import { rescueDshBundles } from './runtime/profile.js'
 import { parseDshProtocolUrl, executeProtocolInstall } from './runtime/protocol.js'
 import type { MarketConfig } from './types.js'
 
@@ -11,6 +12,10 @@ export const name = 'dsh-stream-market'
  * @param config 用户在 cordis.yml 中配置的参数
  */
 export function apply(ctx: any, config: MarketConfig = {}) {
+  // 启动即刻进行 profile bundles 深度安全防御，剔除非法 bundle 声明并补全缺失 patch
+  try {
+    rescueDshBundles(config.profile || 'web')
+  } catch {}
   const bridge = new MarketBridgeServer(config)
 
   // 1. 如果宿主提供了 webServer 容器，直接挂载路由

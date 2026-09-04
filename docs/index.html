@@ -2030,7 +2030,7 @@
 
         let statusActionHtml = '';
         if (!isInstalled) {
-          statusActionHtml = '<button class="btn btn-install-host" onclick="installPluginToDesktop({' +
+          statusActionHtml = '<button class="btn btn-desktop-scheme" onclick="installPluginToDesktop({' +
             'id: \'' + plugin.id + '\',' +
             'name: \'' + plugin.name.replace(/'/g, "\\'") + '\',' +
             'version: \'' + plugin.version + '\',' +
@@ -2190,74 +2190,39 @@
       document.getElementById('detailModal').classList.remove('active');
     };
 
-    // 一键安装（支持宿主内置秒级装载与系统级 dsh:// 联动协议）
+    // 官方 dsh:// 联动协议：唤起桌面端一键安装 (100% 协议唤起，不执行本地 npm)
     window.installPluginToDesktop = function(plugin) {
-      const isLocalHost = window.location.protocol.startsWith('http') && 
-        (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.port === '19898');
-
-      // 宿主环境内：直接开启本地终端装载进程
-      if (isLocalHost && typeof doInstall === 'function' && plugin && plugin.id) {
-        doInstall(plugin.id, plugin.downloadUrl || plugin.repo || plugin.source || plugin.id);
-        return;
-      }
-
-      // 外部 Web 环境：通过 dsh:// 官方联动协议一键拉起桌面端安装
+      if (!plugin) return;
       const params = new URLSearchParams({
-        id: plugin.id,
-        name: plugin.name,
+        id: plugin.id || '',
+        name: plugin.name || plugin.id || '',
         version: plugin.version || 'latest',
-        repo: plugin.repo || plugin.id,
-        permissions: plugin.permissions || '网络访问, 本地文件读取',
+        repo: plugin.repo || plugin.source || plugin.id || '',
+        permissions: plugin.permissions || '网络访问, 本地环境执行',
         downloadUrl: plugin.downloadUrl || '',
       });
 
       const deepLink = 'dsh://plugin/install?' + params.toString();
-      appendLog('>>> 正在通过系统协议执行一键安装: ' + deepLink, 'highlight');
+      appendLog('>>> 正在通过系统协议唤起桌面端一键安装: ' + deepLink, 'highlight');
 
-      const iframe = document.createElement('iframe');
-      iframe.style.display = 'none';
-      iframe.src = deepLink;
-      document.body.appendChild(iframe);
-      setTimeout(() => document.body.removeChild(iframe), 2500);
+      // 1. 通过隐藏 iframe 发起协议拉起
+      try {
+        const iframe = document.createElement('iframe');
+        iframe.style.display = 'none';
+        iframe.src = deepLink;
+        document.body.appendChild(iframe);
+        setTimeout(() => {
+          if (iframe.parentNode) document.body.removeChild(iframe);
+        }, 3000);
+      } catch (e) {}
+
+      // 2. 同时使用 window.location.href 触发系统注册的 dsh:// URL Scheme
+      try {
+        window.location.href = deepLink;
+      } catch (e) {}
 
       terminalDrawer.classList.add('open');
-      appendLog('🚀 已发送一键安装指令！系统将通过官方 dsh:// 联动协议唤起 DeepSeek Harness 执行安装。', 'success');
-    };
-
-    // 本地内置装载 (SSE)
-    window.doInstall = function(pluginId, source) {
-      terminalDrawer.classList.add('open');
-      document.getElementById('terminalBadge').style.display = 'inline';
-      document.getElementById('terminalBadge').textContent = '正在安装 ' + pluginId;
-      appendLog('>>> 发起宿主内置装载: ' + pluginId + ' (源: ' + source + ')', 'highlight');
-
-      const evtSource = new EventSource('/api/market/install?id=' + encodeURIComponent(pluginId) + '&source=' + encodeURIComponent(source));
-
-      evtSource.onmessage = function(e) {
-        try {
-          const data = JSON.parse(e.data);
-          if (data.type === 'log') appendLog(data.message);
-          else if (data.type === 'success') {
-            appendLog(data.message, 'success');
-            evtSource.close();
-            document.getElementById('terminalBadge').style.display = 'none';
-            refreshInstalled();
-          } else if (data.type === 'error') {
-            appendLog(data.message, 'error');
-            evtSource.close();
-            document.getElementById('terminalBadge').style.display = 'none';
-          }
-        } catch (err) {
-          appendLog(e.data);
-        }
-      };
-
-      evtSource.onerror = function() {
-        appendLog('⚠️ 进程执行完毕或连接结束', 'normal');
-        evtSource.close();
-        document.getElementById('terminalBadge').style.display = 'none';
-        refreshInstalled();
-      };
+      appendLog('🚀 已发送一键安装指令！正在唤起 DeepSeek Harness 桌面客户端确认并安装。', 'success');
     };
 
     // 启用/停用切换

@@ -8,7 +8,7 @@ export interface PluginMeta {
   description: string
   version: string
   author: string
-  category: 'essential' | 'efficiency' | 'coding' | 'agent' | 'theme' | 'security' | 'media' | 'general'
+  category?: 'essential' | 'efficiency' | 'coding' | 'agent' | 'theme' | 'security' | 'media' | 'general' | 'tools' | 'dev' | string
   icon?: string
   banner?: string
   tags: string[]

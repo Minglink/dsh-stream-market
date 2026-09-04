@@ -3,806 +3,2851 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DeepSeek Harness 插件市场 — 极速秒开 · 官方 dsh:// 联动 · 深度本地管理</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
+  <title>DeepSeek Harness 内置插件市场 · Stream Hub</title>
   <style>
     :root {
-      --primary: #0284c7;
-      --primary-hover: #0369a1;
-      --primary-light: #e0f2fe;
-      --accent: #2563eb;
-      --accent-gradient: linear-gradient(135deg, #0284c7 0%, #2563eb 50%, #4f46e5 100%);
-      --bg: #f8fafc;
-      --card-bg: #ffffff;
-      --border: #e2e8f0;
+      /* 蓝白清爽配色体系 (Blue & White Palette) */
+      --bg-main: #f8fafc;
+      --bg-card: #ffffff;
+      --bg-card-hover: #ffffff;
+      --border-color: #e2e8f0;
+      --border-hover: #0ea5e9;
       --text-main: #0f172a;
+      --text-secondary: #334155;
       --text-muted: #64748b;
-      --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
-      --shadow-md: 0 10px 30px -10px rgba(2, 132, 199, 0.12), 0 4px 6px -2px rgba(0,0,0,0.03);
-      --shadow-lg: 0 20px 40px -15px rgba(2, 132, 199, 0.18);
+      --accent-blue: #0284c7;
+      --accent-blue-deep: #0369a1;
+      --accent-blue-light: #e0f2fe;
+      --accent-blue-glow: rgba(2, 132, 199, 0.2);
+      --accent-indigo: #4f46e5;
+      --accent-green: #10b981;
+      --accent-amber: #f59e0b;
+      --accent-rose: #f43f5e;
+      --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.06), 0 1px 2px rgba(15, 23, 42, 0.04);
+      --shadow-md: 0 4px 16px rgba(15, 23, 42, 0.08), 0 1px 3px rgba(15, 23, 42, 0.05);
+      --shadow-lg: 0 12px 30px rgba(2, 132, 199, 0.12), 0 4px 10px rgba(15, 23, 42, 0.04);
+      --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif;
-      background-color: var(--bg);
+      background-color: var(--bg-main);
       color: var(--text-main);
-      line-height: 1.6;
+      font-family: var(--font-family);
+      min-height: 100vh;
       overflow-x: hidden;
+      padding-bottom: 90px;
+      background-image: 
+        radial-gradient(circle at 12% 15%, rgba(2, 132, 199, 0.07) 0%, transparent 45%),
+        radial-gradient(circle at 88% 85%, rgba(79, 70, 229, 0.06) 0%, transparent 45%);
     }
 
-    /* 顶部导航 */
+    /* 嵌入设置模式下的紧凑样式 */
+    body.embedded {
+      padding-bottom: 40px;
+      background-image: none;
+    }
+    body.embedded header {
+      padding: 10px 18px;
+    }
+    body.embedded .controls-wrap {
+      margin-top: 12px;
+      padding: 0 16px;
+    }
+    body.embedded .market-grid {
+      padding: 0 16px;
+      margin: 14px auto;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 14px;
+    }
+
+    /* 顶部导航头（纯白晶亮 + 浅蓝高光） */
     header {
       position: sticky;
       top: 0;
-      z-index: 100;
-      background: rgba(255, 255, 255, 0.85);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border);
-      padding: 14px 24px;
-    }
-    .nav-container {
-      max-width: 1200px;
-      margin: 0 auto;
+      z-index: 50;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      background: rgba(255, 255, 255, 0.92);
+      border-bottom: 1px solid var(--border-color);
+      padding: 14px 28px;
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: 16px;
+      box-shadow: var(--shadow-sm);
     }
-    .brand {
+
+    .brand-area {
       display: flex;
       align-items: center;
-      gap: 10px;
-      text-decoration: none;
-      color: var(--text-main);
+      gap: 12px;
     }
-    .brand-icon {
-      width: 36px;
-      height: 36px;
-      background: var(--accent-gradient);
-      color: white;
+
+    .logo-icon {
+      width: 38px;
+      height: 38px;
       border-radius: 10px;
+      background: linear-gradient(135deg, #0284c7, #2563eb);
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 20px;
-      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
+      box-shadow: 0 4px 12px var(--accent-blue-glow);
+      flex-shrink: 0;
+      color: #fff;
     }
+
     .brand-text h1 {
-      font-size: 17px;
+      font-size: 16px;
       font-weight: 700;
-      letter-spacing: -0.3px;
+      letter-spacing: -0.02em;
+      background: linear-gradient(90deg, #0284c7, #2563eb);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      line-height: 1.2;
     }
-    .brand-text span {
+
+    .brand-text p {
       font-size: 11px;
       color: var(--text-muted);
-      display: block;
+      margin-top: 2px;
     }
-    .nav-links {
+
+    .header-actions {
       display: flex;
       align-items: center;
-      gap: 16px;
+      gap: 10px;
+      flex-wrap: wrap;
     }
-    .nav-badge {
-      background: #eff6ff;
-      color: #2563eb;
-      border: 1px solid #bfdbfe;
-      padding: 4px 10px;
+
+    .expand-btn {
+      padding: 6px 12px;
       border-radius: 20px;
       font-size: 12px;
       font-weight: 600;
-      text-decoration: none;
-      display: inline-flex;
+      cursor: pointer;
+      background: #f0f9ff;
+      color: #0284c7;
+      border: 1px solid #bae6fd;
+      transition: all 0.2s;
+      display: flex;
       align-items: center;
       gap: 5px;
     }
-    .btn-github {
-      background: #0f172a;
-      color: white;
-      padding: 8px 16px;
-      border-radius: 8px;
-      font-size: 13px;
-      font-weight: 600;
-      text-decoration: none;
-      transition: all 0.2s;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .btn-github:hover {
-      background: #1e293b;
+    .expand-btn:hover {
+      background: #e0f2fe;
+      border-color: #7dd3fc;
       transform: translateY(-1px);
     }
 
-    /* Hero 区域 */
-    .hero {
-      padding: 80px 24px 60px;
-      text-align: center;
-      position: relative;
-      background: radial-gradient(circle at 50% 20%, rgba(224, 242, 254, 0.6) 0%, transparent 70%);
-    }
-    .hero-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 14px;
-      background: white;
-      border: 1px solid #bae6fd;
-      border-radius: 30px;
-      font-size: 13px;
-      color: #0284c7;
+    .protocol-btn {
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
       font-weight: 600;
-      margin-bottom: 24px;
-      box-shadow: 0 4px 14px rgba(2, 132, 199, 0.08);
-    }
-    .hero-title {
-      font-size: 46px;
-      font-weight: 800;
-      line-height: 1.25;
-      letter-spacing: -1px;
-      color: #0f172a;
-      max-width: 860px;
-      margin: 0 auto 20px;
-    }
-    .hero-title .gradient-text {
-      background: var(--accent-gradient);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    .hero-desc {
-      font-size: 18px;
-      color: #475569;
-      max-width: 680px;
-      margin: 0 auto 36px;
-      line-height: 1.6;
-    }
-    .hero-actions {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 16px;
-      flex-wrap: wrap;
-      margin-bottom: 40px;
-    }
-    .btn-primary {
-      background: var(--accent-gradient);
-      color: white;
-      padding: 14px 28px;
-      border-radius: 12px;
-      font-size: 16px;
-      font-weight: 600;
-      text-decoration: none;
-      box-shadow: 0 10px 24px -6px rgba(2, 132, 199, 0.4);
-      transition: all 0.2s;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
       cursor: pointer;
-      border: none;
-    }
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 14px 28px -6px rgba(2, 132, 199, 0.5);
-    }
-    .btn-secondary {
-      background: white;
-      color: #334155;
-      border: 1px solid #cbd5e1;
-      padding: 14px 26px;
-      border-radius: 12px;
-      font-size: 16px;
-      font-weight: 600;
-      text-decoration: none;
-      transition: all 0.2s;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .btn-secondary:hover {
       background: #f8fafc;
-      border-color: #94a3b8;
-      transform: translateY(-2px);
+      color: #475569;
+      border: 1px solid #cbd5e1;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .protocol-btn:hover {
+      background: #f1f5f9;
+      color: #0f172a;
     }
 
-    /* 交互式 Mockup 预览卡片 */
-    .mockup-container {
-      max-width: 1080px;
-      margin: 0 auto;
-      background: white;
-      border-radius: 18px;
-      border: 1px solid #cbd5e1;
-      box-shadow: var(--shadow-lg);
-      overflow: hidden;
-      position: relative;
-    }
-    .mockup-header {
-      background: #f1f5f9;
-      padding: 12px 20px;
-      border-bottom: 1px solid #e2e8f0;
+    .host-status {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-    }
-    .mockup-dots {
-      display: flex;
-      gap: 6px;
-    }
-    .mockup-dot {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-    }
-    .dot-red { background: #ef4444; }
-    .dot-yellow { background: #f59e0b; }
-    .dot-green { background: #10b981; }
-    .mockup-title {
-      font-size: 13px;
-      color: #64748b;
-      font-weight: 500;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .mockup-body {
-      display: grid;
-      grid-template-columns: 240px 1fr;
-      min-height: 480px;
-      background: #ffffff;
-    }
-    .mockup-sidebar {
-      background: #f8fafc;
-      border-right: 1px solid #e2e8f0;
-      padding: 20px 14px;
-    }
-    .sidebar-category {
-      font-size: 11px;
-      font-weight: 700;
-      color: #94a3b8;
-      text-transform: uppercase;
-      margin-bottom: 10px;
-      padding-left: 10px;
-    }
-    .sidebar-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 10px 14px;
-      border-radius: 8px;
-      font-size: 13px;
-      font-weight: 500;
-      color: #475569;
-      margin-bottom: 4px;
-      cursor: pointer;
-    }
-    .sidebar-item.active {
-      background: #e0f2fe;
-      color: #0284c7;
-      font-weight: 700;
-    }
-    .mockup-main {
-      padding: 24px;
-      background: #fcfdfe;
-    }
-    .mockup-search-row {
-      display: flex;
-      gap: 12px;
-      margin-bottom: 20px;
-    }
-    .mockup-search-input {
-      flex: 1;
-      padding: 10px 16px;
-      border-radius: 8px;
-      border: 1px solid #cbd5e1;
-      font-size: 13px;
-      outline: none;
-      background: white;
-    }
-    .mockup-badge-bar {
-      display: flex;
       gap: 8px;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
+      font-size: 12px;
+      color: var(--text-muted);
+      background: #f1f5f9;
+      padding: 6px 12px;
+      border-radius: 20px;
+      border: 1px solid #e2e8f0;
     }
-    .mockup-chip {
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent-green);
+      box-shadow: 0 0 8px rgba(16, 185, 129, 0.4);
+    }
+
+    /* 用户登录态控件 (蓝白体系) */
+    .user-area {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .auth-btn {
       padding: 6px 14px;
       border-radius: 20px;
       font-size: 12px;
-      font-weight: 500;
-      background: #f1f5f9;
-      color: #475569;
+      font-weight: 600;
       cursor: pointer;
-    }
-    .mockup-chip.active {
-      background: #0284c7;
-      color: white;
-    }
-    .mockup-card-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-      gap: 16px;
-    }
-    .mockup-plugin-card {
-      background: white;
-      border: 1px solid #e2e8f0;
-      border-radius: 12px;
-      padding: 16px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.02);
       transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border: none;
     }
-    .mockup-plugin-card:hover {
-      border-color: #7dd3fc;
-      transform: translateY(-2px);
-      box-shadow: 0 8px 20px rgba(2, 132, 199, 0.08);
+
+    .btn-login {
+      background: #ffffff;
+      color: #334155;
+      border: 1px solid #cbd5e1;
     }
-    .card-top {
+    .btn-login:hover {
+      background: #f8fafc;
+      color: #0284c7;
+      border-color: #93c5fd;
+    }
+
+    .btn-register {
+      background: linear-gradient(135deg, #0284c7, #2563eb);
+      color: #ffffff;
+      box-shadow: 0 2px 10px rgba(2, 132, 199, 0.25);
+    }
+    .btn-register:hover {
+      background: linear-gradient(135deg, #0369a1, #1d4ed8);
+      transform: translateY(-1px);
+    }
+
+    /* 用户信息 Pill (彻底修复头像和文字溢出) */
+    .user-pill {
       display: flex;
       align-items: center;
-      gap: 10px;
-      margin-bottom: 10px;
+      gap: 8px;
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      padding: 3px 12px 3px 4px;
+      border-radius: 24px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      user-select: none;
+      box-shadow: var(--shadow-sm);
     }
-    .card-icon {
-      width: 32px;
-      height: 32px;
-      border-radius: 8px;
+    .user-pill:hover {
+      border-color: #0284c7;
+      box-shadow: 0 0 12px rgba(2, 132, 199, 0.18);
+      background: #f0f9ff;
+    }
+
+    .user-avatar {
+      width: 28px;
+      height: 28px;
+      min-width: 28px;
+      min-height: 28px;
+      border-radius: 50%;
+      object-fit: cover;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      border: 1.5px solid #bae6fd;
+      background: #f1f5f9;
+      overflow: hidden;
+    }
+
+    .user-avatar-fallback {
+      background: linear-gradient(135deg, #0284c7, #2563eb);
+      color: #ffffff;
+      font-size: 13px;
+      font-weight: 800;
+      line-height: 1;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+    }
+
+    .user-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: #0f172a;
+      max-width: 110px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .user-badge {
+      font-size: 10px;
+      padding: 1.5px 7px;
+      border-radius: 10px;
+      background: #f1f5f9;
+      color: #0284c7;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      border: 1px solid #cbd5e1;
+    }
+
+    .user-badge.badge-admin {
+      background: #fff1f2;
+      color: #e11d48;
+      border-color: #fecdd3;
+    }
+
+    .user-badge.badge-pro {
+      background: #ecfdf5;
+      color: #059669;
+      border-color: #a7f3d0;
+    }
+
+    .user-badge.badge-dev {
+      background: #fffbeb;
+      color: #b45309;
+      border-color: #fde68a;
+    }
+
+    .user-arrow {
+      font-size: 10px;
+      color: #94a3b8;
+      margin-left: -2px;
+      transition: color 0.2s;
+    }
+    .user-pill:hover .user-arrow {
+      color: #0284c7;
+    }
+
+    .user-dropdown {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      margin-top: 8px;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      box-shadow: var(--shadow-lg);
+      width: 230px;
+      z-index: 120;
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .user-dropdown.active {
+      display: flex;
+    }
+
+    .user-dropdown-header {
+      padding: 12px 14px;
+      border-bottom: 1px solid #f1f5f9;
+      background: #f8fafc;
+    }
+
+    .user-dropdown-item {
+      padding: 10px 14px;
+      font-size: 12px;
+      color: #334155;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.15s;
+    }
+    .user-dropdown-item:hover {
       background: #f0f9ff;
       color: #0284c7;
+    }
+    .user-dropdown-item.text-danger {
+      color: #e11d48;
+      border-top: 1px solid #f1f5f9;
+    }
+    .user-dropdown-item.text-danger:hover {
+      background: #fff1f2;
+      color: #be123c;
+    }
+
+    /* 搜索与分类控制区 */
+    .controls-wrap {
+      max-width: 1400px;
+      margin: 20px auto 0;
+      padding: 0 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .search-box {
+      position: relative;
+      width: 100%;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 12px 42px 12px 44px;
+      border-radius: 12px;
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      color: #0f172a;
+      font-size: 14px;
+      outline: none;
+      transition: all 0.25s ease;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .search-input:focus {
+      border-color: #0284c7;
+      box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+      background: #ffffff;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 16px;
+      color: var(--text-muted);
+      pointer-events: none;
+    }
+
+    .search-clear {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      color: var(--text-muted);
+      font-size: 14px;
+      padding: 4px 8px;
+      border-radius: 50%;
+      display: none;
+      user-select: none;
+    }
+    .search-clear:hover { color: #0f172a; background: #e2e8f0; }
+
+    /* 榜单排行与筛选导航栏 (蓝白轻拟物样式) */
+    .rank-tabs {
+      display: flex;
+      gap: 6px;
+      background: #edf2f7;
+      padding: 4px;
+      border-radius: 12px;
+      border: 1px solid #e2e8f0;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .rank-tabs::-webkit-scrollbar { display: none; }
+
+    .rank-tab-btn {
+      padding: 7px 14px;
+      border-radius: 9px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      background: transparent;
+      color: #475569;
+      border: none;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .rank-tab-btn:hover {
+      color: #0f172a;
+      background: rgba(255, 255, 255, 0.6);
+    }
+    .rank-tab-btn.active {
+      background: #ffffff;
+      color: #0284c7;
+      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.08);
+    }
+
+    .categories-bar {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 2px;
+      scrollbar-width: none;
+    }
+    .categories-bar::-webkit-scrollbar { display: none; }
+
+    .category-btn {
+      padding: 6px 14px;
+      border-radius: 18px;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      background: #f1f5f9;
+      color: #475569;
+      border: 1px solid #e2e8f0;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .category-btn:hover {
+      color: #0284c7;
+      background: #f8fafc;
+      border-color: #bae6fd;
+    }
+
+    .category-btn.active {
+      background: #e0f2fe;
+      color: #0284c7;
+      border-color: #7dd3fc;
+      font-weight: 600;
+    }
+
+    /* 插件网格与白底晶亮卡片 */
+    .market-grid {
+      max-width: 1400px;
+      margin: 20px auto;
+      padding: 0 24px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+      gap: 18px;
+    }
+
+    .plugin-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .plugin-card:hover {
+      border-color: #7dd3fc;
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .card-top {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    /* 修复图二图标：蓝白清爽底色、规范矢量尺寸、超限截断 */
+    .plugin-icon {
+      width: 48px;
+      height: 48px;
+      min-width: 48px;
+      min-height: 48px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+      border: 1px solid #bae6fd;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 18px;
+      overflow: hidden;
+      position: relative;
+      flex-shrink: 0;
+      box-shadow: 0 2px 6px rgba(2, 132, 199, 0.1);
     }
-    .card-title {
-      font-size: 14px;
+
+    .plugin-icon svg {
+      width: 24px;
+      height: 24px;
+      stroke: #0284c7;
+      display: block;
+    }
+
+    .plugin-icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      border-radius: 11px;
+    }
+
+    .rank-badge {
+      width: 22px;
+      height: 22px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 800;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .rank-1 { background: #fef08a; color: #854d0e; border: 1px solid #facc15; }
+    .rank-2 { background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; }
+    .rank-3 { background: #fed7aa; color: #9a3412; border: 1px solid #fb923c; }
+    .rank-other { background: #f8fafc; color: #64748b; border: 1px solid #e2e8f0; }
+
+    .plugin-meta {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .plugin-title {
+      font-size: 15px;
       font-weight: 700;
       color: #0f172a;
-    }
-    .card-desc {
-      font-size: 12px;
-      color: #64748b;
-      margin-bottom: 12px;
-      height: 34px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
       overflow: hidden;
-      line-height: 1.4;
+      text-overflow: ellipsis;
     }
+
+    .version-tag {
+      font-size: 11px;
+      color: #0284c7;
+      background: #e0f2fe;
+      padding: 1px 6px;
+      border-radius: 4px;
+      flex-shrink: 0;
+      font-weight: 600;
+    }
+
+    .plugin-author-row {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 3px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .author-avatar {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .plugin-desc {
+      font-size: 12px;
+      line-height: 1.6;
+      color: #475569;
+      margin-bottom: 12px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      min-height: 38px;
+    }
+
+    .tags-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 14px;
+    }
+
+    .tag-chip {
+      font-size: 10.5px;
+      color: #475569;
+      background: #f1f5f9;
+      padding: 2px 8px;
+      border-radius: 6px;
+      border: 1px solid #e2e8f0;
+    }
+
+    .tag-essential {
+      color: #b45309;
+      background: #fef3c7;
+      border-color: #fde68a;
+      font-weight: 600;
+    }
+
     .card-footer {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      border-top: 1px solid #f1f5f9;
+      padding-top: 12px;
+    }
+
+    .card-footer-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .rating-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      background: #fffbeb;
+      border: 1px solid #fef3c7;
+      color: #b45309;
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-weight: 700;
+    }
+
+    .action-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    /* 按钮规范 (高质感蓝白) */
+    .btn {
+      padding: 7px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      text-decoration: none;
+    }
+
+    .btn-install-host {
+      background: linear-gradient(135deg, #0284c7, #0369a1);
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(2, 132, 199, 0.25);
+    }
+    .btn-install-host:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.4);
+    }
+
+    .btn-desktop-scheme {
+      background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25);
+    }
+    .btn-desktop-scheme:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+    }
+
+    .btn-detail {
+      background: #ffffff;
+      color: #334155;
+      border: 1px solid #cbd5e1;
+    }
+    .btn-detail:hover {
+      background: #f8fafc;
+      color: #0284c7;
+      border-color: #93c5fd;
+    }
+
+    .btn-badge-copy {
+      background: #ffffff;
+      color: #475569;
+      border: 1px solid #cbd5e1;
+      padding: 7px 10px;
+    }
+    .btn-badge-copy:hover {
+      background: #f8fafc;
+      color: #0284c7;
+      border-color: #93c5fd;
+    }
+
+    .btn-installed {
+      background: #ecfdf5;
+      color: #059669;
+      border: 1px solid #a7f3d0;
+      cursor: default;
+    }
+
+    .btn-toggle {
+      background: #fffbeb;
+      color: #b45309;
+      border: 1px solid #fde68a;
+    }
+    .btn-toggle:hover {
+      background: #fef3c7;
+    }
+
+    .btn-uninstall {
+      background: #fff1f2;
+      color: #e11d48;
+      border: 1px solid #fecdd3;
+      padding: 7px 10px;
+    }
+    .btn-uninstall:hover {
+      background: #ffe4e6;
+    }
+
+    /* 底部实时终端抽屉 */
+    .terminal-drawer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      background: #ffffff;
+      border-top: 1px solid #cbd5e1;
+      box-shadow: 0 -8px 25px rgba(15, 23, 42, 0.1);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      transform: translateY(calc(100% - 40px));
+    }
+
+    .terminal-drawer.open {
+      transform: translateY(0);
+    }
+
+    .terminal-header {
+      height: 40px;
+      padding: 0 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      background: #f8fafc;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .terminal-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: #0284c7;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .terminal-controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .terminal-body {
+      height: 200px;
+      padding: 16px;
+      background: #090d16;
+      font-family: "Fira Code", Menlo, Monaco, Consolas, monospace;
+      font-size: 12px;
+      line-height: 1.5;
+      color: #94a3b8;
+      overflow-y: auto;
+      white-space: pre-wrap;
+    }
+
+    .log-line { margin-bottom: 4px; }
+    .log-success { color: #34d399; font-weight: bold; }
+    .log-error { color: #fb7185; font-weight: bold; }
+    .log-highlight { color: #38bdf8; }
+
+    /* 弹窗遮罩与白底模态框 */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.5);
+      backdrop-filter: blur(6px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 200;
+      padding: 20px;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      max-width: 640px;
+      width: 100%;
+      padding: 24px;
+      box-shadow: 0 20px 45px rgba(15, 23, 42, 0.18);
+      position: relative;
+      max-height: 90vh;
+      overflow-y: auto;
+      color: #0f172a;
+    }
+
+    .modal-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-top: 1px solid #f8fafc;
-      padding-top: 10px;
-    }
-    .btn-mock-install {
-      background: #0284c7;
-      color: white;
-      border: none;
-      padding: 4px 10px;
-      border-radius: 6px;
-      font-size: 11px;
-      font-weight: 600;
-      cursor: pointer;
+      margin-bottom: 16px;
+      border-bottom: 1px solid #f1f5f9;
+      padding-bottom: 12px;
     }
 
-    /* 4 大核心支柱特性 */
-    .features-section {
-      max-width: 1200px;
-      margin: 90px auto;
-      padding: 0 24px;
-    }
-    .section-title-area {
-      text-align: center;
-      margin-bottom: 50px;
-    }
-    .section-tag {
-      color: #0284c7;
-      font-size: 13px;
-      font-weight: 700;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      margin-bottom: 8px;
-    }
-    .section-heading {
-      font-size: 34px;
-      font-weight: 800;
-      color: #0f172a;
-      letter-spacing: -0.5px;
-    }
-    .features-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 24px;
-    }
-    .feature-card {
-      background: white;
-      padding: 30px;
-      border-radius: 16px;
-      border: 1px solid var(--border);
-      box-shadow: var(--shadow-sm);
-      transition: all 0.2s;
-    }
-    .feature-card:hover {
-      transform: translateY(-4px);
-      box-shadow: var(--shadow-md);
-      border-color: #bae6fd;
-    }
-    .feature-icon-wrap {
-      width: 48px;
-      height: 48px;
-      border-radius: 12px;
-      background: #e0f2fe;
+    .modal-header h3 {
+      font-size: 16px;
       color: #0284c7;
       display: flex;
       align-items: center;
-      justify-content: center;
-      font-size: 24px;
-      margin-bottom: 18px;
-    }
-    .feature-card h3 {
-      font-size: 18px;
-      font-weight: 700;
-      margin-bottom: 10px;
-      color: #0f172a;
-    }
-    .feature-card p {
-      font-size: 14px;
-      color: #64748b;
-      line-height: 1.6;
+      gap: 8px;
     }
 
-    /* 在线协议生成器互动演示 */
-    .protocol-section {
-      max-width: 1000px;
-      margin: 80px auto;
-      padding: 40px;
-      background: white;
-      border-radius: 20px;
-      border: 1px solid #cbd5e1;
-      box-shadow: var(--shadow-md);
+    .modal-close {
+      cursor: pointer;
+      font-size: 22px;
+      color: #94a3b8;
+      background: none;
+      border: none;
+      line-height: 1;
     }
-    .protocol-title {
-      font-size: 24px;
-      font-weight: 700;
-      margin-bottom: 10px;
-      color: #0f172a;
-    }
-    .protocol-desc {
-      font-size: 14px;
-      color: #64748b;
-      margin-bottom: 24px;
-    }
-    .generator-form {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
+    .modal-close:hover { color: #0f172a; }
+
+    /* 详情弹窗增强排版 */
+    .detail-banner {
+      display: flex;
+      align-items: flex-start;
       gap: 16px;
       margin-bottom: 20px;
     }
-    .form-group {
+    .detail-icon {
+      width: 64px;
+      height: 64px;
+      min-width: 64px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+      border: 1px solid #bae6fd;
       display: flex;
-      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--shadow-sm);
+    }
+    .detail-icon svg {
+      width: 32px;
+      height: 32px;
+      stroke: #0284c7;
+    }
+    .detail-icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 15px;
+    }
+    .detail-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      background: #f8fafc;
+      padding: 12px;
+      border-radius: 10px;
+      margin-bottom: 16px;
+      border: 1px solid #e2e8f0;
+    }
+    .detail-stat-item {
+      text-align: center;
+    }
+    .detail-stat-item .val {
+      font-size: 14px;
+      font-weight: 700;
+      color: #0f172a;
+    }
+    .detail-stat-item .lbl {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+    .detail-section-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #334155;
+      margin: 14px 0 8px;
+      display: flex;
+      align-items: center;
       gap: 6px;
     }
-    .form-group label {
-      font-size: 12px;
-      font-weight: 600;
-      color: #334155;
-    }
-    .form-group input {
-      padding: 10px 14px;
-      border: 1px solid #cbd5e1;
-      border-radius: 8px;
+    .detail-desc-box {
       font-size: 13px;
-      outline: none;
-    }
-    .form-group input:focus {
-      border-color: #0284c7;
-      box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.1);
-    }
-    .output-box {
+      line-height: 1.7;
+      color: #334155;
       background: #f8fafc;
+      padding: 14px;
+      border-radius: 8px;
       border: 1px solid #e2e8f0;
-      border-radius: 10px;
-      padding: 16px;
-      margin-top: 14px;
+      white-space: pre-wrap;
     }
-    .output-label {
-      font-size: 11px;
-      font-weight: 700;
+
+    .code-snippet-box {
+      margin-top: 12px;
+    }
+
+    .code-snippet-title {
+      font-size: 12px;
       color: #64748b;
-      text-transform: uppercase;
       margin-bottom: 6px;
+      display: flex;
+      justify-content: space-between;
     }
-    .output-code {
-      font-family: Consolas, Monaco, "Courier New", monospace;
+
+    .code-block {
+      background: #090d16;
+      border: 1px solid #1e293b;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-family: monospace;
       font-size: 12px;
-      color: #0f172a;
+      color: #38bdf8;
+      overflow-x: auto;
       word-break: break-all;
-      background: white;
-      padding: 10px;
-      border-radius: 6px;
-      border: 1px solid #e2e8f0;
     }
-    .btn-copy-code {
-      margin-top: 10px;
-      padding: 6px 14px;
-      border-radius: 6px;
-      background: #e0f2fe;
+
+    .copy-btn {
       color: #0284c7;
-      font-weight: 600;
+      background: none;
+      border: none;
       font-size: 12px;
-      border: 1px solid #bae6fd;
       cursor: pointer;
+      font-weight: 600;
+    }
+    .copy-btn:hover {
+      text-decoration: underline;
+    }
+  
+    /* 管理本地插件按钮与角标 */
+    .manage-btn {
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      background: #f0f9ff;
+      color: #0284c7;
+      border: 1px solid #bae6fd;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .manage-btn:hover {
+      background: #e0f2fe;
+      border-color: #7dd3fc;
+      transform: translateY(-1px);
+    }
+    .manage-badge {
+      background: #0284c7;
+      color: #ffffff;
+      font-size: 10px;
+      padding: 1px 6px;
+      border-radius: 10px;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    /* 本地已装载提示横幅 */
+    .installed-banner {
+      max-width: 1400px;
+      margin: 12px auto 0;
+      padding: 12px 18px;
+      background: #ffffff;
+      border: 1px solid #e0f2fe;
+      border-left: 4px solid #0284c7;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      box-shadow: var(--shadow-sm);
+    }
+    .installed-banner-text {
+      font-size: 13px;
+      color: #1e293b;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .btn-manage-action {
+      background: #0284c7;
+      color: #ffffff;
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
       transition: all 0.2s;
     }
-    .btn-copy-code:hover {
-      background: #0284c7;
-      color: white;
+    .btn-manage-action:hover {
+      background: #0369a1;
+      transform: translateY(-1px);
     }
 
-    /* 底部版权 */
-    footer {
-      border-top: 1px solid #e2e8f0;
-      padding: 40px 24px;
-      text-align: center;
-      background: white;
-      margin-top: 80px;
+    /* 本地插件深度管理弹窗内部样式 */
+    .local-mgr-toolbar {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
     }
-    .footer-text {
-      font-size: 13px;
-      color: #64748b;
+    .local-mgr-select-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
-    .footer-text a {
+    .cb-label, .opt-label {
+      font-size: 12px;
+      color: #334155;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .cb-label input[type="checkbox"], .opt-label input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      accent-color: #0284c7;
+      cursor: pointer;
+    }
+    .selected-count-badge {
+      font-size: 11px;
+      background: #e0f2fe;
       color: #0284c7;
-      text-decoration: none;
+      padding: 2px 8px;
+      border-radius: 10px;
       font-weight: 600;
     }
-
-    @media (max-width: 768px) {
-      .hero-title { font-size: 32px; }
-      .mockup-body { grid-template-columns: 1fr; }
-      .mockup-sidebar { display: none; }
-      .generator-form { grid-template-columns: 1fr; }
+    .local-mgr-options {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
     }
+    .btn-danger-clean {
+      background: linear-gradient(135deg, #ef4444, #dc2626);
+      color: #ffffff;
+      border: none;
+      padding: 8px 18px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 12px;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(239, 68, 68, 0.25);
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-danger-clean:hover:not(:disabled) {
+      background: linear-gradient(135deg, #dc2626, #b91c1c);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.35);
+    }
+    .btn-danger-clean:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+    .local-plugins-list {
+      max-height: 52vh;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding-right: 4px;
+    }
+    .local-plugin-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      transition: all 0.15s ease;
+    }
+    .local-plugin-row:hover {
+      border-color: #93c5fd;
+      background: #fbfcfe;
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+    }
+    .local-plugin-row.selected {
+      border-color: #0284c7;
+      background: #f0f9ff;
+    }
+    .local-plugin-icon-wrap {
+      width: 40px;
+      height: 40px;
+      min-width: 40px;
+      border-radius: 10px;
+      background: #e0f2fe;
+      border: 1px solid #bae6fd;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .local-plugin-icon-wrap svg {
+      width: 22px;
+      height: 22px;
+      stroke: #0284c7;
+    }
+    .local-plugin-icon-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .local-plugin-info {
+      flex: 1;
+      min-width: 0;
+    }
+    .local-plugin-title-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 3px;
+    }
+    .local-plugin-name {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: #0f172a;
+    }
+    .local-plugin-id {
+      font-family: monospace;
+      font-size: 11px;
+      color: #64748b;
+      background: #f1f5f9;
+      padding: 1px 6px;
+      border-radius: 4px;
+    }
+    .local-plugin-desc {
+      font-size: 11.5px;
+      color: #475569;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      margin-bottom: 3px;
+    }
+    .local-plugin-meta-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      font-size: 11px;
+    }
+    .badge-status-on {
+      background: #ecfdf5;
+      color: #059669;
+      border: 1px solid #a7f3d0;
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+    .badge-status-off {
+      background: #f1f5f9;
+      color: #64748b;
+      border: 1px solid #cbd5e1;
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+    .badge-link {
+      background: #fef3c7;
+      color: #b45309;
+      border: 1px solid #fde68a;
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+    .local-plugin-path-text {
+      color: #64748b;
+      font-family: monospace;
+      max-width: 320px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .local-plugin-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+    .local-mgr-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px solid #f1f5f9;
+      font-size: 12px;
+      color: #64748b;
+    }
+
   </style>
 </head>
 <body>
 
   <!-- 头部导航 -->
   <header>
-    <div class="nav-container">
-      <a href="#" class="brand">
-        <div class="brand-icon">⚡</div>
-        <div class="brand-text">
-          <h1>dsh-stream-market</h1>
-          <span>DeepSeek Harness 内置插件市场</span>
-        </div>
-      </a>
-      <div class="nav-links">
-        <a href="https://github.com/topics/dsh-plugin" target="_blank" class="nav-badge">
-          🏷️ dsh-plugin 社区
-        </a>
-        <a href="https://github.com/Minglink/dsh-stream-market" target="_blank" class="btn-github">
-          ⭐ GitHub 仓库
-        </a>
+    <div class="brand-area">
+      <div class="logo-icon">⚡</div>
+      <div class="brand-text">
+        <h1>DeepSeek Harness 插件生态市场</h1>
+        <p>热门开源插件 · 权威排行榜单 · 官方 dsh:// 联动协议</p>
+      </div>
+    </div>
+
+    <div class="header-actions">
+      <button class="expand-btn" id="expandBtn" onclick="requestFullScreen()" title="展开全屏视窗">
+        <span>⛶</span>
+        <span>全屏视窗</span>
+      </button>
+
+      <button class="protocol-btn" onclick="openProtocolInspector()" title="测试 dsh:// 协议">
+        <span>🔗</span>
+        <span>协议调试</span>
+      </button>
+
+      
+      <button class="manage-btn" id="openLocalMgrBtn" onclick="openLocalManagerModal()" title="管理本地已安装插件，支持多选彻底卸载与深度清理">
+        <span>📦</span>
+        <span>管理本地插件</span>
+        <span class="manage-badge" id="localCountBadge">0</span>
+      </button>
+
+      <div class="host-status" id="hostStatus">
+        <span class="status-dot"></span>
+        <span id="profileText">DSH: 连接中...</span>
+      </div>
+
+      <!-- 用户登录态控件 -->
+      <div class="user-area" id="userArea">
+        <button class="auth-btn btn-login" onclick="openAuthModal('login')">🔑 登录</button>
+        <button class="auth-btn btn-register" onclick="openAuthModal('register')">✨ 注册</button>
       </div>
     </div>
   </header>
 
-  <!-- Hero 介绍区域 -->
-  <section class="hero">
-    <div class="hero-badge">
-      <span>🚀 赋能 DeepSeek Harness 微内核扩展生态</span>
-    </div>
-    <h1 class="hero-title">
-      让开源插件生态，成为 <br><span class="gradient-text">DeepSeek Harness</span> 的第一生产力
-    </h1>
-    <p class="hero-desc">
-      专为 DeepSeek Harness (DSH) 打造的内置可视化插件市场。设置左侧栏原生注入、0ms 极速秒开、官方 <code>dsh://</code> 协议联动、深度本地扩展生命周期管理与彻底粉碎卸载。
-    </p>
-    <div class="hero-actions">
-      <a href="dsh://plugin/install?id=dsh-stream-market&name=Stream%E6%8F%92%E4%BB%B6%E5%B8%82%E5%9C%BA&version=1.0.0&repo=Minglink/dsh-stream-market&permissions=%E7%BD%91%E7%BB%9C%E8%AE%BF%E9%97%AE,%20%E6%9C%AC%E5%9C%B0%E7%8E%AF%E5%A2%83%E6%89%A7%E8%A1%8C,%20%E6%89%A9%E5%B1%95%E7%AE%A1%E7%90%86%E5%99%A8" class="btn-primary" title="点击直接拉起官方桌面端自动化安装">
-        ⚡ 唤起桌面端一键安装 (dsh://)
-      </a>
-      <a href="http://127.0.0.1:18899/" target="_blank" class="btn-secondary">
-        🖥️ 打开本地控制台 (18899)
-      </a>
-      <a href="https://github.com/Minglink/dsh-stream-market" target="_blank" class="btn-secondary">
-        📖 查看 GitHub 源码
-      </a>
+  <!-- 搜索与筛选控制栏 -->
+  <div class="controls-wrap">
+    <div class="search-box">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="searchInput" class="search-input" placeholder="输入插件名称、ID、关键词、作者或标签搜索...">
+      <span class="search-clear" id="searchClear" onclick="clearSearch()">✕</span>
     </div>
 
-    <!-- 交互式 UI 视窗展示 -->
-    <div class="mockup-container">
-      <div class="mockup-header">
-        <div class="mockup-dots">
-          <div class="mockup-dot dot-red"></div>
-          <div class="mockup-dot dot-yellow"></div>
-          <div class="mockup-dot dot-green"></div>
+    <!-- 榜单与分类双栏导航 (深云生态对齐) -->
+    <div style="display: flex; flex-direction: column; gap: 8px;">
+      <div class="rank-tabs" id="rankTabs">
+        <button class="rank-tab-btn active" data-rank="all">🌟 综合推荐</button>
+        <button class="rank-tab-btn" data-rank="hot">🔥 热门总榜</button>
+        <button class="rank-tab-btn" data-rank="essential">⭐ 必装精选</button>
+        <button class="rank-tab-btn" data-rank="trending">⚡ 飙升新星</button>
+        <button class="rank-tab-btn" data-rank="newest">🕒 最新发布</button>
+        <button class="rank-tab-btn" data-rank="installed">📦 本地已安装</button>
+      </div>
+
+      <div class="categories-bar" id="categoriesBar">
+        <button class="category-btn active" data-category="all">🌟 全部领域</button>
+        <button class="category-btn" data-category="security">🛡️ 破甲与安全</button>
+        <button class="category-btn" data-category="tools">⚡ 实用工具</button>
+        <button class="category-btn" data-category="coding">💻 开发调试</button>
+        <button class="category-btn" data-category="agent">🤖 智囊Agent</button>
+        <button class="category-btn" data-category="essential">⭐ 必装精选</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 插件列表网格 -->
+  <main class="market-grid" id="pluginsGrid">
+    <div style="grid-column: 1/-1; text-align: center; padding: 60px; color: #64748b;">
+      ⚡ 正在连接 DSH 宿主并加载插件生态库...
+    </div>
+  </main>
+
+  <!-- 本地插件快速管理横幅 (在已安装视图下高亮) -->
+  <div class="installed-banner" id="installedBanner" style="display: none;">
+    <div class="installed-banner-text">
+      <span>📦 <strong>本地已装载插件深度管理</strong>：共检测到 <span id="installedBannerCount" style="color: #0284c7; font-weight: 700;">0</span> 款扩展</span>
+      <span style="font-size: 11px; color: #64748b;">(支持选择彻底卸载，物理清理 node_modules 与 cordis 规则)</span>
+    </div>
+    <button class="btn btn-manage-action" onclick="openLocalManagerModal()">
+      <span>🛠️ 打开深度管理面板 (支持批量彻底卸载)</span>
+    </button>
+  </div>
+
+
+  <!-- 底部实时安装控制台 -->
+  <div class="terminal-drawer" id="terminalDrawer">
+    <div class="terminal-header" id="terminalHeader">
+      <div class="terminal-title">
+        <span>📟</span>
+        <span>装载控制台 (Installation Terminal)</span>
+        <span id="terminalBadge" style="font-size: 11px; padding: 2px 8px; border-radius: 10px; background: #e0f2fe; color: #0284c7; display: none;">运行中</span>
+      </div>
+      <div class="terminal-controls">
+        <span id="toggleTip">点击展开 / 收起控制台 ▲</span>
+      </div>
+    </div>
+    <div class="terminal-body" id="terminalBody">
+      <div class="log-line">⚡ DeepSeek Harness 本地运行时监控就绪。</div>
+      <div class="log-line">⚡ dsh:// 桌面客户端一键联动协议就绪。</div>
+    </div>
+  </div>
+
+  <!-- 用户登录 / 注册模态弹窗 -->
+  <div class="modal-overlay" id="authModal">
+    <div class="modal-content" style="max-width: 420px;">
+      <div class="modal-header">
+        <h3 id="authModalTitle">🔑 登录 DeepSeek Harness 生态</h3>
+        <button class="modal-close" onclick="closeAuthModal()">×</button>
+      </div>
+      <div style="display: flex; gap: 8px; margin-bottom: 18px; border-bottom: 1px solid #f1f5f9; padding-bottom: 10px;">
+        <button id="tabAuthLogin" class="rank-tab-btn active" onclick="switchAuthTab('login')">账号登录</button>
+        <button id="tabAuthRegister" class="rank-tab-btn" onclick="switchAuthTab('register')">免费注册</button>
+      </div>
+      <form id="authForm" onsubmit="handleAuthSubmit(event)">
+        <div style="margin-bottom: 14px;">
+          <label style="display: block; font-size: 12px; color: #475569; margin-bottom: 6px; font-weight: 600;">邮箱或用户名</label>
+          <input type="text" id="authEmail" required placeholder="请输入登录邮箱或用户名" class="search-input" style="padding: 10px 14px;">
         </div>
-        <div class="mockup-title">
-          <span>DeepSeek Harness — 系统设置 · 插件市场</span>
+        <div id="authNameField" style="margin-bottom: 14px; display: none;">
+          <label style="display: block; font-size: 12px; color: #475569; margin-bottom: 6px; font-weight: 600;">开发者显示昵称</label>
+          <input type="text" id="authName" placeholder="个性昵称 (例如: GeekCode)" class="search-input" style="padding: 10px 14px;">
         </div>
-        <div style="font-size: 11px; color: #10b981; font-weight: 600;">
-          🟢 DSH: web · 就绪
+        <div style="margin-bottom: 18px;">
+          <label style="display: block; font-size: 12px; color: #475569; margin-bottom: 6px; font-weight: 600;">密码</label>
+          <input type="password" id="authPassword" required placeholder="请输入密码" class="search-input" style="padding: 10px 14px;">
         </div>
+        <div id="authError" style="color: #e11d48; font-size: 12px; margin-bottom: 12px; display: none; background: #fff1f2; padding: 8px 12px; border-radius: 6px; border: 1px solid #fecdd3;"></div>
+        <div style="display: flex; justify-content: flex-end; gap: 10px;">
+          <button type="button" class="btn btn-detail" onclick="closeAuthModal()">取消</button>
+          <button type="submit" id="authSubmitBtn" class="btn btn-register" style="padding: 8px 22px;">确认登录</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 插件详情抽屉 / 模态框 -->
+  
+  <!-- 本地插件管理与深度彻底卸载模态弹窗 -->
+  <div class="modal-overlay" id="localManagerModal">
+    <div class="modal-content" style="max-width: 860px; width: 96%; max-height: 90vh;">
+      <div class="modal-header">
+        <div>
+          <h3 style="display: flex; align-items: center; gap: 8px; font-size: 16px; color: #0284c7;">
+            <span>📦</span>
+            <span>本地插件管理 · 深度彻底卸载</span>
+          </h3>
+          <p style="font-size: 11px; color: var(--text-muted); margin-top: 3px;">
+            支持多选/全选批量彻底卸载、物理粉碎 node_modules 残留、清理 cordis.patch 补丁与 package.json 依赖
+          </p>
+        </div>
+        <button class="modal-close" onclick="closeLocalManagerModal()">&times;</button>
       </div>
-      <div class="mockup-body">
-        <!-- 侧边栏 -->
-        <div class="mockup-sidebar">
-          <div class="sidebar-category">系统设置</div>
-          <div class="sidebar-item">⚙️ 通用偏好</div>
-          <div class="sidebar-item">🧠 模型与推理</div>
-          <div class="sidebar-item">🔌 核心扩展</div>
-          <div class="sidebar-item active">⚡ 插件市场</div>
-          <div class="sidebar-item">📦 本地插件管理 (6)</div>
+
+      <!-- 控制工具栏 -->
+      <div class="local-mgr-toolbar">
+        <div class="local-mgr-select-box">
+          <label class="cb-label">
+            <input type="checkbox" id="selectAllLocalCb" onchange="toggleSelectAllLocal(this.checked)">
+            <span style="font-weight: 600; font-size: 13px;">全选</span>
+          </label>
+          <span class="selected-count-badge" id="selectedLocalCountBadge">已选 0 项</span>
         </div>
-        <!-- 主体列表 -->
-        <div class="mockup-main">
-          <div class="mockup-search-row">
-            <input type="text" class="mockup-search-input" placeholder="🔍 输入插件名称、ID、关键词搜索..." value="">
-          </div>
-          <div class="mockup-badge-bar">
-            <div class="mockup-chip active">🌟 综合推荐</div>
-            <div class="mockup-chip">🔥 热门总榜</div>
-            <div class="mockup-chip">⭐ 必装精选</div>
-            <div class="mockup-chip">⚡ 飙升新星</div>
-            <div class="mockup-chip">📦 本地已安装 (6)</div>
-          </div>
-          <div class="mockup-card-grid">
-            <div class="mockup-plugin-card">
-              <div class="card-top">
-                <div class="card-icon">⚡</div>
-                <div>
-                  <div class="card-title">无限三代 (Infinite Gen 2)</div>
-                  <div style="font-size: 11px; color: #0284c7;">v2.5.0 · 官方必装</div>
-                </div>
-              </div>
-              <div class="card-desc">彻底释放思考上限，解锁双通道深度推理与逻辑突破。</div>
-              <div class="card-footer">
-                <span style="font-size: 11px; color: #10b981; font-weight: 600;">✅ 已装载</span>
-                <button class="btn-mock-install" style="background: #e2e8f0; color: #475569;">配置</button>
-              </div>
-            </div>
-            <div class="mockup-plugin-card">
-              <div class="card-top">
-                <div class="card-icon">🎨</div>
-                <div>
-                  <div class="card-title">极致侧边栏 (Better Sidebar)</div>
-                  <div style="font-size: 11px; color: #0284c7;">v1.4.2 · UI增强</div>
-                </div>
-              </div>
-              <div class="card-desc">会话智能分组、置顶、历史沉降与快捷按键导航。</div>
-              <div class="card-footer">
-                <span style="font-size: 11px; color: #10b981; font-weight: 600;">✅ 已装载</span>
-                <button class="btn-mock-install" style="background: #e2e8f0; color: #475569;">配置</button>
-              </div>
-            </div>
-            <div class="mockup-plugin-card">
-              <div class="card-top">
-                <div class="card-icon">🐳</div>
-                <div>
-                  <div class="card-title">深鲸知识库 (Deep Whale)</div>
-                  <div style="font-size: 11px; color: #64748b;">v1.1.0 · RAG增强</div>
-                </div>
-              </div>
-              <div class="card-desc">无缝接入本地向量库与外部多源知识印证。</div>
-              <div class="card-footer">
-                <span style="font-size: 11px; color: #64748b;">⭐ 395 赞</span>
-                <button class="btn-mock-install">⚡ 本地装载</button>
-              </div>
-            </div>
-          </div>
+
+        <div class="local-mgr-options">
+          <label class="opt-label" title="同时清除 cordis.patch.yml 中的配置条目">
+            <input type="checkbox" id="optCleanConfig" checked> 清理 patch 补丁
+          </label>
+          <label class="opt-label" title="彻底物理粉碎 node_modules 中的实体文件与软链接">
+            <input type="checkbox" id="optCleanFiles" checked> 粉碎实体目录
+          </label>
+          <label class="opt-label" title="若存在本地链接源工程，一并移除">
+            <input type="checkbox" id="optCleanSource"> 移除插件源工程
+          </label>
+        </div>
+
+        <div class="local-mgr-actions">
+          <button class="btn btn-danger-clean" id="btnBatchUninstall" onclick="executeBatchCleanUninstall()" disabled>
+            <span>🔥 彻底卸载所选 (0)</span>
+          </button>
         </div>
       </div>
-    </div>
-  </section>
 
-  <!-- 4 大核心支柱特性 -->
-  <section class="features-section">
-    <div class="section-title-area">
-      <div class="section-tag">Key Pillars</div>
-      <h2 class="section-heading">四大企业级原生架构特性</h2>
-    </div>
-    <div class="features-grid">
-      <div class="feature-card">
-        <div class="feature-icon-wrap">⚡</div>
-        <h3>0ms 瞬时秒开架构</h3>
-        <p>预置官方精选离线高热度生态库。页面启动毫无延迟白屏，三路并行并发健康探测，网络异常即刻平滑自愈回退。</p>
+      <!-- 搜索过滤 -->
+      <div style="margin-bottom: 12px;">
+        <input type="text" id="localFilterInput" class="search-input" style="padding: 8px 14px; font-size: 12px;" placeholder="在本地插件中快速搜索 (名称、ID、路径)..." oninput="filterLocalPluginsList()">
       </div>
-      <div class="feature-card">
-        <div class="feature-icon-wrap">🎨</div>
-        <h3>设置侧栏原生深度融合</h3>
-        <p>深度融入 DeepSeek Harness「系统设置」侧边栏，支持嵌入式微面板与沉浸式全屏大视窗无缝切换。</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon-wrap">📦</div>
-        <h3>本地插件深度清理与粉碎</h3>
-        <p>可视化呈现本地所有扩展。支持多选批量彻底粉碎卸载，同时净化 cordis.patch 补丁规则与本地源码，零垃圾残留。</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon-wrap">🔗</div>
-        <h3>官方 dsh:// 联动协议</h3>
-        <p>完整支持桌面端 dsh:// URI Scheme 规范。在任何网页或文档中点击即可一键拉起官方客户端进行原子化构建。</p>
-      </div>
-    </div>
-  </section>
 
-  <!-- 交互式 dsh:// 协议生成演示 -->
-  <section class="protocol-section">
-    <h2 class="protocol-title">🔌 在线 dsh:// 协议与徽章生成器</h2>
-    <p class="protocol-desc">输入您的插件元数据，立即生成支持一键拉起官方桌面端安装的协议直链与 Markdown 徽章代码：</p>
-    
-    <div class="generator-form">
-      <div class="form-group">
-        <label>插件唯一 ID (id):</label>
-        <input type="text" id="inputPluginId" value="my-awesome-plugin" oninput="updateProtocolOutput()">
+      <!-- 本地插件列表容器 -->
+      <div class="local-plugins-list" id="localPluginsList">
+        <!-- 动态渲染本地插件项目 -->
       </div>
-      <div class="form-group">
-        <label>展示名称 (name):</label>
-        <input type="text" id="inputPluginName" value="我的高能插件" oninput="updateProtocolOutput()">
-      </div>
-      <div class="form-group">
-        <label>版本号 (version):</label>
-        <input type="text" id="inputPluginVer" value="1.0.0" oninput="updateProtocolOutput()">
-      </div>
-      <div class="form-group">
-        <label>GitHub 仓库 (repo):</label>
-        <input type="text" id="inputPluginRepo" value="user/my-awesome-plugin" oninput="updateProtocolOutput()">
-      </div>
-    </div>
 
-    <div class="output-box">
-      <div class="output-label">生成的 dsh:// 协议直链</div>
-      <div class="output-code" id="outputProtocolUrl"></div>
-      <button class="btn-copy-code" onclick="copyProtocolUrl()">📋 复制直链</button>
-      <a id="btnTestProtocol" href="#" class="btn-copy-code" style="text-decoration: none; margin-left: 8px;">🚀 本机测试拉起</a>
-    </div>
-
-    <div class="output-box">
-      <div class="output-label">生成的 README Markdown 徽章</div>
-      <div class="output-code" id="outputMarkdownBadge"></div>
-      <button class="btn-copy-code" onclick="copyMarkdownBadge()">📋 复制 Markdown 徽章</button>
-    </div>
-  </section>
-
-  <!-- 底部说明 -->
-  <footer>
-    <div class="footer-text">
-      DeepSeek Harness 官方插件生态社区 · <a href="https://github.com/topics/dsh-plugin" target="_blank">dsh-plugin GitHub Topic</a> · 基于 MIT License 开源
-      <div style="margin-top: 8px; color: #94a3b8; font-size: 12px;">
-        Designed & Maintained by <a href="https://github.com/Minglink" target="_blank">MinLinking (MingLink)</a>
+      <div class="local-mgr-footer">
+        <span id="localTotalFooterText">共检测到 0 款本地插件</span>
+        <div style="display: flex; gap: 8px;">
+          <button class="btn btn-detail" style="border-color: #38bdf8; color: #0284c7;" onclick="doRescueBundles()" title="自动诊断并修复 profile bundle 缺少 dsh.bundle 导致的退出码 1 崩溃">
+            <span>🚑 一键自愈崩溃隐患</span>
+          </button>
+          <button class="btn btn-detail" onclick="refreshInstalled()">🔄 刷新列表</button>
+        </div>
       </div>
     </div>
-  </footer>
+  </div>
+
+  <div class="modal-overlay" id="detailModal">
+    <div class="modal-content" style="max-width: 720px;">
+      <div class="modal-header">
+        <h3 id="detailTitle">📖 插件详情</h3>
+        <button class="modal-close" onclick="closeDetailModal()">×</button>
+      </div>
+      <div id="detailContent">
+        <!-- Dynamic Detail Rendering -->
+      </div>
+    </div>
+  </div>
+
+  <!-- 协议徽章与直链弹窗 -->
+  <div class="modal-overlay" id="badgeModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modalTitle">🔗 插件安装链接与开发徽章</h3>
+        <button class="modal-close" onclick="closeModal()">×</button>
+      </div>
+      <p style="font-size: 13px; color: #64748b; line-height: 1.6;">
+        通过标准的 <code style="color: #0284c7; background: #e0f2fe; padding: 2px 6px; border-radius: 4px;">dsh://plugin/install?...</code> 协议，网页与第三方文档可免命令行一键拉起官方桌面客户端 (EXE)。
+      </p>
+
+      <div class="code-snippet-box">
+        <div class="code-snippet-title">
+          <span>系统级 URI Scheme 直链</span>
+          <button class="copy-btn" onclick="copySnippet('schemeCode')">复制</button>
+        </div>
+        <div class="code-block" id="schemeCode"></div>
+      </div>
+
+      <div class="code-snippet-box">
+        <div class="code-snippet-title">
+          <span>HTML 一键唤起按钮 (&lt;a href="..."&gt;)</span>
+          <button class="copy-btn" onclick="copySnippet('htmlCode')">复制</button>
+        </div>
+        <div class="code-block" id="htmlCode"></div>
+      </div>
+
+      <div class="code-snippet-box">
+        <div class="code-snippet-title">
+          <span>GitHub README Markdown 徽章</span>
+          <button class="copy-btn" onclick="copySnippet('mdCode')">复制</button>
+        </div>
+        <div class="code-block" id="mdCode"></div>
+      </div>
+    </div>
+  </div>
 
   <script>
-    function updateProtocolOutput() {
-      const id = document.getElementById('inputPluginId').value.trim() || 'sample-plugin';
-      const name = document.getElementById('inputPluginName').value.trim() || 'Sample Plugin';
-      const ver = document.getElementById('inputPluginVer').value.trim() || '1.0.0';
-      const repo = document.getElementById('inputPluginRepo').value.trim() || 'org/sample-plugin';
+    // 1. Lucide 矢量图标字典 (彻底修复图二 Sparkles 大文本溢出覆盖标题的 Bug)
+    const LUCIDE_ICONS = {
+      sparkles: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/></svg>',
+      bot: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>',
+      flame: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>',
+      zap: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>',
+      shield: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.5 3.8 17 5 19 5a1 1 0 0 1 1 1z"/></svg>',
+      terminal: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>',
+      code: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>',
+      layers: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>',
+      package: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>',
+      box: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>',
+      bookopen: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>',
+      globe: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>',
+      cpu: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="16" x="4" y="4" rx="2"/><rect width="6" height="6" x="9" y="9" rx="1"/><path d="M15 2v2"/><path d="M15 20v2"/><path d="M2 15h2"/><path d="M2 9h2"/><path d="M20 15h2"/><path d="M20 9h2"/><path d="M9 2v2"/><path d="M9 20v2"/></svg>',
+      brain: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 4.44-5.04z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-4.44-5.04z"/></svg>',
+      settings: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>',
+      star: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>'
+    };
 
-      const url = 'dsh://plugin/install?id=' + encodeURIComponent(id) +
-        '&name=' + encodeURIComponent(name) +
-        '&version=' + encodeURIComponent(ver) +
-        '&repo=' + encodeURIComponent(repo) +
-        '&permissions=' + encodeURIComponent('网络访问, 本地环境执行');
+    window.handleIconImgError = function(img) {
+      if (img && img.parentElement) {
+        img.parentElement.innerHTML = LUCIDE_ICONS.sparkles;
+      }
+    };
 
-      document.getElementById('outputProtocolUrl').textContent = url;
-      document.getElementById('btnTestProtocol').href = url;
+    window.handleAvatarImgError = function(img, initial) {
+      if (img && img.parentElement) {
+        img.outerHTML = renderUserInitialAvatar(initial);
+      }
+    };
 
-      const mdBadge = '[![一键装载到 DSH](https://img.shields.io/badge/DSH-一键安装%20' + encodeURIComponent(name) + '-0284c7?style=for-the-badge&logo=deepseek)](' + url + ')';
-      document.getElementById('outputMarkdownBadge').textContent = mdBadge;
+    function renderPluginIcon(plugin) {
+      const raw = (plugin.icon || 'Sparkles').trim();
+      
+      // 1. 网络图片 URL
+      if (raw.startsWith('http://') || raw.startsWith('https://') || raw.startsWith('data:image/')) {
+        return '<img src="' + escapeHtml(raw) + '" alt="' + escapeHtml(plugin.name) + '" onerror="window.handleIconImgError(this)" />';
+      }
+
+      // 2. 短 Emoji 字符 (1-2 字符)
+      if (raw.length <= 2) {
+        return '<span style="font-size:24px;line-height:1;">' + raw + '</span>';
+      }
+
+      // 3. 匹配 Lucide 图标名称 (忽略大小写)
+      const key = raw.toLowerCase().replace(/[^a-z]/g, '');
+      if (LUCIDE_ICONS[key]) {
+        return LUCIDE_ICONS[key];
+      }
+
+      // 4. 首字母渐变标识 fallback
+      const letters = (plugin.name || plugin.id || 'DS').replace(/[^a-zA-Z0-9\u4e00-\u9fa5]/g, '').slice(0, 2).toUpperCase() || 'DS';
+      return '<span style="font-size:15px;font-weight:800;background:linear-gradient(135deg,#0284c7,#2563eb);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">' + letters + '</span>';
     }
 
-    function copyProtocolUrl() {
-      const text = document.getElementById('outputProtocolUrl').textContent;
-      navigator.clipboard.writeText(text).then(() => alert('已成功复制 dsh:// 协议直链！'));
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
     }
 
-    function copyMarkdownBadge() {
-      const text = document.getElementById('outputMarkdownBadge').textContent;
-      navigator.clipboard.writeText(text).then(() => alert('已成功复制 Markdown 徽章代码！'));
+    // 官方默认内置精品插件库 (秒级首屏即刻呈现，杜绝白屏与等待)
+    const DEFAULT_FALLBACK_PLUGINS = [
+  {
+    "id": "types-js-yaml",
+    "name": "dsh-stream-market (DeepSeek Harness 内置插件市场)",
+    "description": "测试版请勿下载 dsh-stream-market (DeepSeek Harness 内置插件市场)，支持在Deepseek桌面中直接进入插件市场",
+    "version": "4.0.15",
+    "author": "MingLin",
+    "category": "essential",
+    "icon": "Sparkles",
+    "tags": [
+      "dsh",
+      "plugin"
+    ],
+    "source": "https://deepseek.stream/uploads/plugins/plugin-types-js-yaml-v4.0.14.zip",
+    "permissions": "network",
+    "downloadUrl": "https://deepseek.stream/uploads/plugins/plugin-types-js-yaml-v4.0.14.zip",
+    "downloads": 161,
+    "stars": 0,
+    "ratingScore": 9.8,
+    "reviewCount": 13,
+    "fileSize": "0.10 MB",
+    "isOfficial": true,
+    "isEssential": true,
+    "homepage": "https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/js-yaml"
+  },
+  {
+    "id": "dsh-infinite-gen-3",
+    "name": "dsh infinite gen 3",
+    "description": "DeepSeek 专用破甲插件「无限三代」dsh-infinite-gen-3 — armor-breaking plugin for DeepSeek，破甲版：稳定化破甲，求 Star 收藏 ⭐",
+    "version": "1.0.0",
+    "author": "Minglink",
+    "authorUrl": "https://github.com/Minglink",
+    "category": "security",
+    "icon": "Sparkles",
+    "tags": [
+      "armor-breaking",
+      "deepseek",
+      "deepseek-harness",
+      "dsh-plugin"
+    ],
+    "source": "github:Minglink/dsh-infinite-gen-3",
+    "repo": "Minglink/dsh-infinite-gen-3",
+    "permissions": "network",
+    "downloadUrl": "https://deepseek.stream/api/plugins/download?id=dsh-infinite-gen-3",
+    "downloads": 497,
+    "stars": 0,
+    "ratingScore": 9.8,
+    "reviewCount": 41,
+    "fileSize": "1.5 MB",
+    "isOfficial": true,
+    "isEssential": true,
+    "homepage": "https://github.com/Minglink/dsh-infinite-gen-3"
+  },
+  {
+    "id": "dsh-infinite-gen-2",
+    "name": "dsh infinite gen 2",
+    "description": "DeepSeek 专用破甲插件「无限二代」dsh-infinite-gen-2 — armor-breaking plugin for DeepSeek稳定化破甲提示词，求 Star 收藏 ⭐",
+    "version": "1.0.0",
+    "author": "MingLin",
+    "authorUrl": "https://deepseek.stream",
+    "category": "security",
+    "icon": "Sparkles",
+    "tags": [
+      "armor-breaking",
+      "deepseek",
+      "deepseek-harness",
+      "dsh-plugin"
+    ],
+    "source": "https://deepseek.stream/api/plugins/download?id=dsh-infinite-gen-2",
+    "repo": "Minglink/dsh-plugins-repo",
+    "permissions": "network",
+    "downloadUrl": "https://deepseek.stream/api/plugins/download?id=dsh-infinite-gen-2",
+    "downloads": 2045,
+    "stars": 0,
+    "ratingScore": 9.8,
+    "reviewCount": 170,
+    "fileSize": "1.5 MB",
+    "isOfficial": true,
+    "isEssential": true,
+    "homepage": "https://github.com/Minglink/dsh-plugins-repo/tree/main/plugins/dsh-infinite-gen-2"
+  },
+  {
+    "id": "dsh-infinite-gen-1",
+    "name": "dsh-infinite-gen-1",
+    "description": "DeepSeek Harness 破甲插件「无限一代」：v4 系全局破甲提示词与工具。",
+    "version": "0.1.0",
+    "author": "MingLin",
+    "authorUrl": "https://deepseek.stream",
+    "category": "security",
+    "icon": "Sparkles",
+    "tags": [
+      "破甲增强",
+      "深度推理",
+      "提示词矩阵",
+      "prompt",
+      "dsh-plugin",
+      "tools"
+    ],
+    "source": "https://deepseek.stream/api/plugins/download?id=dsh-infinite-gen-1",
+    "repo": "Minglink/dsh-plugins-repo",
+    "permissions": "network",
+    "downloadUrl": "https://deepseek.stream/api/plugins/download?id=dsh-infinite-gen-1",
+    "downloads": 81,
+    "stars": 0,
+    "ratingScore": 9.5,
+    "reviewCount": 6,
+    "fileSize": "0.00 MB",
+    "isOfficial": true,
+    "isEssential": false,
+    "homepage": "https://github.com/Minglink/dsh-plugins-repo/tree/main/plugins/dsh-infinite-gen-1"
+  },
+  {
+    "id": "re-tool-dsh",
+    "name": "re tool dsh",
+    "description": "基于 GitHub 开源的 DeepSeek Harness 扩展",
+    "version": "1.0.0",
+    "author": "2924704322-gif",
+    "authorUrl": "https://github.com/2924704322-gif",
+    "category": "tools",
+    "icon": "Sparkles",
+    "tags": [
+      "github",
+      "dsh"
+    ],
+    "source": "https://deepseek.stream/api/plugins/download?id=re-tool-dsh",
+    "repo": "2924704322-gif/re-tool-dsh",
+    "permissions": "network",
+    "downloadUrl": "https://deepseek.stream/api/plugins/download?id=re-tool-dsh",
+    "downloads": 25,
+    "stars": 0,
+    "ratingScore": 9.5,
+    "reviewCount": 0,
+    "fileSize": "1.5 MB",
+    "isOfficial": false,
+    "isEssential": true,
+    "homepage": "https://github.com/2924704322-gif/re-tool-dsh"
+  },
+  {
+    "id": "dsh-plugin-restart",
+    "name": "dsh-plugin-restart",
+    "description": "One-click restart button for the dsh web GUI: the client button calls a host route that writes the restart marker and exits; the patched Electron shell respawns the backend.",
+    "version": "0.2.0",
+    "author": "lysander",
+    "category": "tools",
+    "icon": "Sparkles",
+    "tags": [
+      "dsh",
+      "plugin"
+    ],
+    "source": "https://deepseek.stream/api/plugins/download?id=dsh-plugin-restart",
+    "permissions": "network",
+    "downloadUrl": "https://deepseek.stream/api/plugins/download?id=dsh-plugin-restart",
+    "downloads": 3,
+    "stars": 0,
+    "ratingScore": 9.2,
+    "reviewCount": 0,
+    "fileSize": "0.01 MB",
+    "isOfficial": false,
+    "isEssential": false,
+    "homepage": "https://deepseek.stream/plugins/dsh-plugin-restart"
+  },
+  {
+    "id": "dsh-gitbash",
+    "name": "dsh gitbash",
+    "description": "Persistent Git-Bash terminal plugin for DeepSeek Harness (DSH) — state kept across bash calls on win32",
+    "version": "1.0.0",
+    "author": "zzy1601",
+    "authorUrl": "https://github.com/zzy1601",
+    "category": "tools",
+    "icon": "Sparkles",
+    "tags": [
+      "github",
+      "dsh"
+    ],
+    "source": "https://deepseek.stream/api/plugins/download?id=dsh-gitbash",
+    "repo": "zzy1601/dsh-gitbash",
+    "permissions": "network",
+    "downloadUrl": "https://deepseek.stream/api/plugins/download?id=dsh-gitbash",
+    "downloads": 0,
+    "stars": 0,
+    "ratingScore": 9.2,
+    "reviewCount": 0,
+    "fileSize": "1.5 MB",
+    "isOfficial": false,
+    "isEssential": false,
+    "homepage": "https://github.com/zzy1601/dsh-gitbash"
+  },
+  {
+    "id": "ampproject-remapping",
+    "name": "@ampproject/remapping",
+    "description": "Remap sequential sourcemaps through transformations to point at the original source code",
+    "version": "2.3.2",
+    "author": "Justin Ridgewell <jridgewell@google.com>",
+    "category": "tools",
+    "icon": "Sparkles",
+    "tags": [
+      "dsh",
+      "plugin"
+    ],
+    "source": "https://deepseek.stream/uploads/plugins/plugin-ampproject-remapping-v2.3.1.zip",
+    "permissions": "network",
+    "downloadUrl": "https://deepseek.stream/uploads/plugins/plugin-ampproject-remapping-v2.3.1.zip",
+    "downloads": 4,
+    "stars": 0,
+    "ratingScore": 9.2,
+    "reviewCount": 0,
+    "fileSize": "0.01 MB",
+    "isOfficial": true,
+    "isEssential": true,
+    "homepage": "https://deepseek.stream/plugins/ampproject-remapping"
+  },
+  {
+    "id": "dsh-anchored-standard",
+    "name": "dsh-anchored-standard",
+    "description": "DeepSeek Harness 0.1.2 两阶段锚定标准模式预设套件 (Anchored Standard Suite)",
+    "version": "1.0.2",
+    "author": "MingLin",
+    "category": "tools",
+    "icon": "Sparkles",
+    "tags": [
+      "dsh",
+      "plugin"
+    ],
+    "source": "https://deepseek.stream/uploads/plugins/plugin-dsh-anchored-standard-v1.0.1.zip",
+    "permissions": "network",
+    "downloadUrl": "https://deepseek.stream/uploads/plugins/plugin-dsh-anchored-standard-v1.0.1.zip",
+    "downloads": 2,
+    "stars": 0,
+    "ratingScore": 9.2,
+    "reviewCount": 0,
+    "fileSize": "0.48 MB",
+    "isOfficial": true,
+    "isEssential": true,
+    "homepage": "https://deepseek.stream/plugins/dsh-anchored-standard"
+  },
+  {
+    "id": "dsh-external-dsh-graded-mode",
+    "name": "@dsh-external/dsh-graded-mode",
+    "description": "分级模式 v0.0.1-exp（体验实验版）：脑暴出题制（ask_user_question 选择题对齐+必选模式题+多轮歧义结清）→commit_star 北极星定稿→规格化两级计划（spec/accept/do/verify 必填门控+小类粒度 mode）→锁定即呈完整规格单（确认请求唯一）→执行注入按规格定制（三段式+北极星锚定（替代开工前自问）+委派/编排/红队/双轨 skill 卡，委派可情景改写但验收锚=盘档规格）→组收官逐条核对→终验。大小类引导走 next-step（同轮即时，无过期）；模式只认用户改口（防漂移）；6 工具+状态磁盘单轨+审计端点+超级面板。",
+    "version": "0.0.1-rc1.1.1",
+    "author": "MingLin",
+    "category": "tools",
+    "icon": "Sparkles",
+    "tags": [
+      "dsh",
+      "plugin"
+    ],
+    "source": "https://deepseek.stream/uploads/plugins/plugin-dsh-external-dsh-graded-mode-v0.0.1-rc1.1.zip",
+    "permissions": "network",
+    "downloadUrl": "https://deepseek.stream/uploads/plugins/plugin-dsh-external-dsh-graded-mode-v0.0.1-rc1.1.zip",
+    "downloads": 4,
+    "stars": 0,
+    "ratingScore": 9.2,
+    "reviewCount": 0,
+    "fileSize": "0.28 MB",
+    "isOfficial": true,
+    "isEssential": false,
+    "homepage": "https://deepseek.stream/plugins/dsh-external-dsh-graded-mode"
+  }
+];
+
+    // 全局状态
+    let allPlugins = DEFAULT_FALLBACK_PLUGINS.slice();
+    let installedMap = {};
+    let currentCategory = 'all';
+    let currentRank = 'all';
+    let currentSearch = '';
+    let currentUser = null;
+    let authMode = 'login';
+
+    const grid = document.getElementById('pluginsGrid');
+    const searchInput = document.getElementById('searchInput');
+    const searchClear = document.getElementById('searchClear');
+    const rankTabs = document.getElementById('rankTabs');
+    const categoriesBar = document.getElementById('categoriesBar');
+    const terminalDrawer = document.getElementById('terminalDrawer');
+    const terminalHeader = document.getElementById('terminalHeader');
+    const terminalBody = document.getElementById('terminalBody');
+    const profileText = document.getElementById('profileText');
+    const userArea = document.getElementById('userArea');
+
+    // 检查是否嵌入于设置 iframe
+    if (window.self !== window.top || window.location.search.includes('embedded=1')) {
+      document.body.classList.add('embedded');
     }
 
-    updateProtocolOutput();
+    // 终端抽屉折叠
+    terminalHeader.addEventListener('click', () => {
+      terminalDrawer.classList.toggle('open');
+      const isOpen = terminalDrawer.classList.contains('open');
+      document.getElementById('toggleTip').textContent = isOpen ? '点击收起 ▼' : '点击展开 ▲';
+    });
+
+    function appendLog(text, type) {
+      type = type || 'normal';
+      const line = document.createElement('div');
+      line.className = 'log-line';
+      if (type === 'success') line.classList.add('log-success');
+      if (type === 'error') line.classList.add('log-error');
+      if (type === 'highlight') line.classList.add('log-highlight');
+      line.textContent = text;
+      terminalBody.appendChild(line);
+      terminalBody.scrollTop = terminalBody.scrollHeight;
+    }
+
+    // 毫秒级超时非阻塞请求封装 (全面兼容任何沙箱与浏览器环境)
+    function fetchWithTimeout(url, timeoutMs, options) {
+      if (typeof AbortController !== 'undefined') {
+        var controller = new AbortController();
+        var timer = setTimeout(function() { controller.abort(); }, timeoutMs || 3000);
+        var opts = Object.assign({}, options || {}, { signal: controller.signal });
+        return fetch(url, opts).finally(function() { clearTimeout(timer); });
+      }
+      return fetch(url, options);
+    }
+
+    // 初始化运行 (极速秒开架构：先行渲染 -> 并发探测 -> 无感热重载)
+    async function init() {
+      // 1. 立即首屏渲染 (0ms 瞬时直出，绝无白屏与连接卡顿)
+      try {
+        render();
+        if (typeof renderLocalManagerList === 'function') {
+          renderLocalManagerList();
+        }
+      } catch (e) {
+        console.warn('Initial render note:', e);
+      }
+
+      // 2. 并行非阻塞恢复用户会话
+      checkUserSession().catch(function() {});
+
+      // 3. 并发探测宿主健康度
+      fetchWithTimeout('/api/market/health', 2500)
+        .then(function(res) {
+          if (res.ok) return res.json();
+          return null;
+        })
+        .then(function(health) {
+          if (health && profileText) {
+            var ver = (health.dshVersion && health.dshVersion !== 'unknown') ? ('v' + health.dshVersion) : '就绪';
+            profileText.textContent = 'DSH: ' + (health.profile || 'web') + ' · ' + ver;
+          }
+        })
+        .catch(function() {
+          if (profileText && profileText.textContent.includes('连接中')) {
+            profileText.textContent = 'DSH: web · 就绪';
+          }
+        });
+
+      // 4. 并发快速同步本地已装载插件 (立即刷新管理徽章与清单)
+      fetchWithTimeout('/api/market/installed', 3000)
+        .then(function(res) {
+          if (res.ok) return res.json();
+          return null;
+        })
+        .then(function(instData) {
+          if (instData && instData.installed) {
+            installedMap = instData.installed || {};
+            render();
+            if (typeof renderLocalManagerList === 'function') {
+              renderLocalManagerList();
+            }
+          }
+        })
+        .catch(function(e) {
+          console.warn('Local installed sync:', e.message);
+        });
+
+      // 5. 并发异步同步云端生态库 (超时自动降级至内置高热度清单)
+      fetchWithTimeout('/api/market/catalog', 8000)
+        .then(function(res) {
+          if (res.ok) return res.json();
+          return null;
+        })
+        .then(function(catData) {
+          if (catData && Array.isArray(catData.plugins) && catData.plugins.length > 0) {
+            allPlugins = catData.plugins;
+            render();
+            if (typeof renderLocalManagerList === 'function') {
+              renderLocalManagerList();
+            }
+          }
+        })
+        .catch(function(e) {
+          appendLog('⚡ 采用内置离线高热度生态库 (' + allPlugins.length + ' 款精选扩展)', 'normal');
+        });
+    }
+
+    // 用户鉴权逻辑
+    async function checkUserSession() {
+      try {
+        const cached = localStorage.getItem('dsh_user_session');
+        if (cached) {
+          currentUser = JSON.parse(cached);
+          renderUserArea();
+        }
+
+        const res = await fetch('/api/auth/me');
+        if (res.ok) {
+          const data = await res.json();
+          if (data.user) {
+            currentUser = data.user;
+            localStorage.setItem('dsh_user_session', JSON.stringify(currentUser));
+            renderUserArea();
+          }
+        }
+      } catch (e) {
+        renderUserArea();
+      }
+    }
+
+    function renderUserInitialAvatar(initial) {
+      return '<div class="user-avatar user-avatar-fallback">' + escapeHtml(initial || 'U') + '</div>';
+    }
+
+    function renderUserAvatarElement(user) {
+      const name = user.displayName || user.name || user.username || 'User';
+      const initial = (name || 'U').trim().charAt(0).toUpperCase() || 'U';
+      const rawUrl = user.avatarUrl || user.avatar || user.image || user.picture;
+
+      if (rawUrl && typeof rawUrl === 'string' && (rawUrl.startsWith('http://') || rawUrl.startsWith('https://') || rawUrl.startsWith('/'))) {
+        return '<img class="user-avatar" src="' + escapeHtml(rawUrl) + '" alt="' + escapeHtml(name) + '" onerror="window.handleAvatarImgError(this, \'' + escapeHtml(initial) + '\')">';
+      }
+      return renderUserInitialAvatar(initial);
+    }
+
+    function renderRoleBadge(role) {
+      const r = String(role || 'PRO').toUpperCase();
+      let cls = 'user-badge';
+      if (r.includes('ADMIN')) cls += ' badge-admin';
+      else if (r.includes('PRO') || r.includes('VIP')) cls += ' badge-pro';
+      else if (r.includes('DEV') || r.includes('开发') || r.includes('本地')) cls += ' badge-dev';
+      return '<span class="' + cls + '">' + escapeHtml(r) + '</span>';
+    }
+
+    function renderUserArea() {
+      if (!currentUser) {
+        userArea.innerHTML = '<button class="auth-btn btn-login" onclick="openAuthModal(\'login\')">🔑 登录</button>' +
+          '<button class="auth-btn btn-register" onclick="openAuthModal(\'register\')">✨ 注册</button>';
+        return;
+      }
+
+      const name = currentUser.displayName || currentUser.name || currentUser.username || '开发者';
+      const role = currentUser.role || (currentUser.isOffline ? '本地' : 'Pro');
+      const avatarHtml = renderUserAvatarElement(currentUser);
+      const roleBadgeHtml = renderRoleBadge(role);
+
+      userArea.innerHTML = '<div class="user-pill" onclick="toggleUserDropdown(event)" title="' + escapeHtml(name) + ' (' + escapeHtml(role) + ')">' +
+        avatarHtml +
+        '<span class="user-name">' + escapeHtml(name) + '</span>' +
+        roleBadgeHtml +
+        '<span class="user-arrow">▾</span>' +
+        '</div>' +
+        '<div class="user-dropdown" id="userDropdown">' +
+        '<div class="user-dropdown-header">' +
+        '<div style="display: flex; align-items: center; gap: 10px; margin-bottom: 6px;">' +
+        avatarHtml +
+        '<div style="flex: 1; min-width: 0;">' +
+        '<strong style="display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; color: #0f172a;">' + escapeHtml(name) + '</strong>' +
+        '<span style="display: block; font-size: 11px; color: #64748b; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">' + escapeHtml(currentUser.email || currentUser.username) + '</span>' +
+        '</div>' +
+        roleBadgeHtml +
+        '</div>' +
+        '</div>' +
+        '<div class="user-dropdown-item" onclick="window.open(\'https://deepseek.stream\', \'_blank\')">' +
+        '🌐 访问官方生态市场' +
+        '</div>' +
+        '<div class="user-dropdown-item" onclick="checkUserSession()">' +
+        '🔄 刷新账户状态' +
+        '</div>' +
+        '<div class="user-dropdown-item text-danger" onclick="doLogout()">' +
+        '🚪 退出当前账号' +
+        '</div>' +
+        '</div>';
+    }
+
+    window.toggleUserDropdown = function(e) {
+      e.stopPropagation();
+      const dd = document.getElementById('userDropdown');
+      if (dd) dd.classList.toggle('active');
+    };
+
+    document.addEventListener('click', () => {
+      const dd = document.getElementById('userDropdown');
+      if (dd) dd.classList.remove('active');
+    });
+
+    window.openAuthModal = function(mode) {
+      mode = mode || 'login';
+      authMode = mode;
+      document.getElementById('authModal').classList.add('active');
+      document.getElementById('authError').style.display = 'none';
+      switchAuthTab(mode);
+    };
+
+    window.closeAuthModal = function() {
+      document.getElementById('authModal').classList.remove('active');
+    };
+
+    window.switchAuthTab = function(mode) {
+      authMode = mode;
+      const isLogin = mode === 'login';
+      document.getElementById('tabAuthLogin').classList.toggle('active', isLogin);
+      document.getElementById('tabAuthRegister').classList.toggle('active', !isLogin);
+      document.getElementById('authModalTitle').textContent = isLogin ? '🔑 登录 DeepSeek Harness 生态' : '✨ 注册 DeepSeek Harness 账号';
+      document.getElementById('authNameField').style.display = isLogin ? 'none' : 'block';
+      document.getElementById('authSubmitBtn').textContent = isLogin ? '确认登录' : '立即注册';
+    };
+
+    window.handleAuthSubmit = async function(e) {
+      e.preventDefault();
+      const errBox = document.getElementById('authError');
+      errBox.style.display = 'none';
+
+      const email = document.getElementById('authEmail').value.trim();
+      const password = document.getElementById('authPassword').value.trim();
+      const displayName = document.getElementById('authName').value.trim();
+
+      const endpoint = authMode === 'login' ? '/api/auth/login' : '/api/auth/register';
+      const payload = {
+        emailOrUsername: email,
+        email: email,
+        password: password,
+        name: displayName
+      };
+
+      try {
+        const res = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+
+        if (res.ok && data.user) {
+          currentUser = data.user;
+          localStorage.setItem('dsh_user_session', JSON.stringify(currentUser));
+          renderUserArea();
+          closeAuthModal();
+          terminalDrawer.classList.add('open');
+          appendLog('✅ 登录成功！欢迎 ' + (currentUser.displayName || currentUser.username) + ' 进入生态市场', 'success');
+        } else {
+          errBox.textContent = data.message || data.error || '登录鉴权失败，请检查账号密码';
+          errBox.style.display = 'block';
+        }
+      } catch (err) {
+        currentUser = {
+          id: 'dev_' + Date.now(),
+          username: email.split('@')[0] || 'Developer',
+          displayName: displayName || email.split('@')[0] || 'Developer',
+          email: email,
+          role: '开发者',
+          isOffline: true
+        };
+        localStorage.setItem('dsh_user_session', JSON.stringify(currentUser));
+        renderUserArea();
+        closeAuthModal();
+        appendLog('⚡ 已通过离线开发者通道进入: ' + currentUser.displayName, 'highlight');
+      }
+    };
+
+    window.doLogout = async function() {
+      try {
+        await fetch('/api/auth/logout', { method: 'POST' });
+      } catch (e) {}
+      currentUser = null;
+      localStorage.removeItem('dsh_user_session');
+      renderUserArea();
+      appendLog('ℹ️ 账号已退出', 'normal');
+    };
+
+    // 全屏视窗联动请求 (支持与 DSH 宿主通信)
+    window.requestFullScreen = function() {
+      window.parent.postMessage({ type: 'dsh-market-open-fullscreen' }, '*');
+      if (document.fullscreenElement) {
+        document.exitFullscreen().catch(() => {});
+      } else {
+        document.documentElement.requestFullscreen().catch(() => {});
+      }
+    };
+
+    // 核心渲染引擎
+    function render() {
+      let filtered = allPlugins.filter(item => {
+        // 分类过滤
+        if (currentCategory !== 'all') {
+          if (currentCategory === 'essential' && !item.isEssential) return false;
+          if (currentCategory === 'installed' && !installedMap[item.id]) return false;
+          if (currentCategory !== 'essential' && currentCategory !== 'installed') {
+            const matchCat = item.category === currentCategory;
+            const matchTag = (item.tags || []).some(t => t.toLowerCase().includes(currentCategory.toLowerCase()) || currentCategory.toLowerCase().includes(t.toLowerCase()));
+            if (!matchCat && !matchTag) return false;
+          }
+        }
+
+        // 榜单预过滤
+        if (currentRank === 'essential' && !item.isEssential) return false;
+        if (currentRank === 'installed' && !installedMap[item.id]) return false;
+
+        // 搜索匹配
+        if (currentSearch) {
+          const q = currentSearch.toLowerCase();
+          return item.name.toLowerCase().includes(q) ||
+                 item.id.toLowerCase().includes(q) ||
+                 (item.description || '').toLowerCase().includes(q) ||
+                 (item.author || '').toLowerCase().includes(q) ||
+                 (item.tags || []).some(t => t.toLowerCase().includes(q));
+        }
+        return true;
+      });
+
+      // 榜单排序逻辑
+      if (currentRank === 'hot') {
+        filtered.sort((a, b) => ((b.downloads || 0) * 2 + (b.stars || 0) * 10) - ((a.downloads || 0) * 2 + (a.stars || 0) * 10));
+      } else if (currentRank === 'trending') {
+        filtered.sort((a, b) => ((b.ratingScore || 4.8) * 100 + (b.downloads || 0)) - ((a.ratingScore || 4.8) * 100 + (a.downloads || 0)));
+      } else if (currentRank === 'newest') {
+        filtered.sort((a, b) => (new Date(b.updatedAt || b.createdAt || 0).getTime()) - (new Date(a.updatedAt || a.createdAt || 0).getTime()));
+      }
+
+      if (filtered.length === 0) {
+        grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 60px; color: #64748b;">🔍 未找到符合条件的插件</div>';
+        return;
+      }
+
+      grid.innerHTML = filtered.map((plugin, index) => {
+        const inst = installedMap[plugin.id];
+        const isInstalled = !!inst;
+        const isEnabled = inst ? inst.enabled !== false : false;
+
+        // 排行榜序号 Badge
+        let rankBadgeHtml = '';
+        if (currentRank === 'hot' || currentRank === 'trending') {
+          const rankNum = index + 1;
+          const cls = rankNum === 1 ? 'rank-1' : rankNum === 2 ? 'rank-2' : rankNum === 3 ? 'rank-3' : 'rank-other';
+          rankBadgeHtml = '<div class="rank-badge ' + cls + '">#' + rankNum + '</div>';
+        }
+
+        let statusActionHtml = '';
+        if (!isInstalled) {
+          statusActionHtml = '<button class="btn btn-install-host" onclick="doInstall(\'' + plugin.id + '\', \'' + plugin.source + '\')" title="直接装入当前 DSH 实例">' +
+            '⚡ 本地装载' +
+            '</button>' +
+            '<button class="btn btn-desktop-scheme" onclick="installPluginToDesktop({' +
+            'id: \'' + plugin.id + '\',' +
+            'name: \'' + plugin.name.replace(/'/g, "\\'") + '\',' +
+            'version: \'' + plugin.version + '\',' +
+            'repo: \'' + (plugin.repo || plugin.source) + '\',' +
+            'permissions: \'' + (plugin.permissions || '网络访问, 本地环境执行') + '\',' +
+            'downloadUrl: \'' + (plugin.downloadUrl || '') + '\'' +
+            '})" title="通过 dsh:// 协议拉起官方桌面端">' +
+            '🚀 唤起桌面端' +
+            '</button>' +
+            '<button class="btn btn-detail" onclick="openDetailModal(\'' + plugin.id + '\')" title="查看插件详情与版本历史">' +
+            '📖 详情' +
+            '</button>' +
+            '<button class="btn btn-badge-copy" onclick="openBadgeModal(\'' + plugin.id + '\')" title="查看协议直链与 Markdown 徽章">' +
+            '🔗' +
+            '</button>';
+        } else {
+          statusActionHtml = '<span class="btn btn-installed">✅ 已装载</span>' +
+            '<button class="btn btn-toggle" onclick="doToggle(\'' + plugin.id + '\', ' + (!isEnabled) + ')">' +
+            (isEnabled ? '⏸️ 停用' : '▶️ 启用') +
+            '</button>' +
+            '<button class="btn btn-uninstall" title="卸载插件" onclick="doUninstall(\'' + plugin.id + '\')">🗑️</button>' +
+            '<button class="btn btn-detail" onclick="openDetailModal(\'' + plugin.id + '\')" title="查看详情">📖 详情</button>' +
+            '<button class="btn btn-badge-copy" onclick="openBadgeModal(\'' + plugin.id + '\')" title="协议徽章">🔗</button>';
+        }
+
+        const tagsHtml = (plugin.tags || []).map(t => {
+          const isEss = t.includes('必装') || t.includes('官方');
+          return '<span class="tag-chip ' + (isEss ? 'tag-essential' : '') + '">' + escapeHtml(t) + '</span>';
+        }).join('');
+
+        const authorAvatar = plugin.authorAvatar 
+          ? '<img class="author-avatar" src="' + escapeHtml(plugin.authorAvatar) + '" alt="" onerror="this.style.display=\'none\'">' 
+          : '';
+
+        return '<div class="plugin-card" id="card-' + plugin.id + '">' +
+          '<div>' +
+          '<div class="card-top">' +
+          rankBadgeHtml +
+          '<div class="plugin-icon">' + renderPluginIcon(plugin) + '</div>' +
+          '<div class="plugin-meta">' +
+          '<div class="plugin-title">' +
+          '<span title="' + escapeHtml(plugin.name) + '">' + escapeHtml(plugin.name) + '</span>' +
+          '<span class="version-tag">v' + escapeHtml(plugin.version) + '</span>' +
+          '</div>' +
+          '<div class="plugin-author-row">' +
+          authorAvatar +
+          '<span>by ' + escapeHtml(plugin.author) + '</span>' +
+          '</div>' +
+          '</div>' +
+          '</div>' +
+          '<div class="plugin-desc" title="' + escapeHtml(plugin.description) + '">' + escapeHtml(plugin.description) + '</div>' +
+          '<div class="tags-container">' + tagsHtml + '</div>' +
+          '</div>' +
+          '<div class="card-footer">' +
+          '<div class="card-footer-top">' +
+          '<span class="rating-pill">★ ' + (plugin.ratingScore || 5.0).toFixed(1) + '</span>' +
+          '<span>⭐ ' + (plugin.stars || 128) + '</span>' +
+          '<span>⬇️ ' + (plugin.downloads || 1200) + '</span>' +
+          '<span>源: ' + escapeHtml((plugin.repo || plugin.source || '').slice(0, 16)) + '</span>' +
+          '</div>' +
+          '<div class="action-group">' +
+          statusActionHtml +
+          '</div>' +
+          '</div>' +
+          '</div>';
+      }).join('');
+    }
+
+    // 插件详情弹窗
+    window.openDetailModal = function(pluginId) {
+      const plugin = allPlugins.find(p => p.id === pluginId);
+      if (!plugin) return;
+
+      const inst = installedMap[plugin.id];
+      const isInstalled = !!inst;
+      const isEnabled = inst ? inst.enabled !== false : false;
+
+      document.getElementById('detailTitle').textContent = '📖 ' + plugin.name;
+      const content = document.getElementById('detailContent');
+
+      const versionsList = (plugin.versionHistory && plugin.versionHistory.length > 0)
+        ? plugin.versionHistory.map(v => '<div style="display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #f1f5f9; font-size: 12px;">' +
+            '<span style="color: #0284c7; font-weight: 600;">v' + v.version + '</span>' +
+            '<span style="color: #64748b;">' + (v.releaseDate || '最近发布') + '</span>' +
+            '</div>').join('')
+        : '<div style="font-size: 12px; color: #64748b;">v' + plugin.version + ' (当前最新稳定版)</div>';
+
+      content.innerHTML = '<div class="detail-banner">' +
+        '<div class="detail-icon">' + renderPluginIcon(plugin) + '</div>' +
+        '<div style="flex: 1;">' +
+        '<div style="font-size: 18px; font-weight: 700; color: #0f172a; display: flex; align-items: center; gap: 8px;">' +
+        escapeHtml(plugin.name) +
+        '<span class="version-tag">v' + escapeHtml(plugin.version) + '</span>' +
+        '</div>' +
+        '<div style="font-size: 12px; color: #64748b; margin-top: 4px;">' +
+        '作者: ' + escapeHtml(plugin.author) + ' · 类别: ' + escapeHtml(plugin.category || '综合') +
+        '</div>' +
+        '<div style="margin-top: 6px;">' +
+        (plugin.tags || []).map(t => '<span class="tag-chip">' + escapeHtml(t) + '</span>').join(' ') +
+        '</div>' +
+        '</div>' +
+        '</div>' +
+        '<div class="detail-stats-grid">' +
+        '<div class="detail-stat-item">' +
+        '<div class="val" style="color: #b45309;">★ ' + (plugin.ratingScore || 5.0).toFixed(1) + '</div>' +
+        '<div class="lbl">生态评分</div>' +
+        '</div>' +
+        '<div class="detail-stat-item">' +
+        '<div class="val">' + (plugin.downloads || 1200) + '</div>' +
+        '<div class="lbl">总下载量</div>' +
+        '</div>' +
+        '<div class="detail-stat-item">' +
+        '<div class="val">' + (plugin.stars || 128) + '</div>' +
+        '<div class="lbl">GitHub 收藏</div>' +
+        '</div>' +
+        '<div class="detail-stat-item">' +
+        '<div class="val">' + (plugin.fileSize || '320 KB') + '</div>' +
+        '<div class="lbl">包体积</div>' +
+        '</div>' +
+        '</div>' +
+        '<div class="detail-section-title">📄 插件功能与技术简介</div>' +
+        '<div class="detail-desc-box">' + escapeHtml(plugin.description) + '</div>' +
+        '<div class="detail-section-title">🛡️ 权限需求清单</div>' +
+        '<div style="font-size: 12px; color: #0369a1; background: #e0f2fe; padding: 8px 12px; border-radius: 6px; border: 1px solid #bae6fd;">' +
+        escapeHtml(plugin.permissions || '网络访问, 宿主槽位扩展, 本地文件读取') +
+        '</div>' +
+        '<div class="detail-section-title">🕒 历史版本</div>' +
+        '<div style="background: #f8fafc; padding: 10px 14px; border-radius: 8px; border: 1px solid #e2e8f0; margin-bottom: 18px;">' +
+        versionsList +
+        '</div>' +
+        '<div style="display: flex; justify-content: flex-end; gap: 8px; border-top: 1px solid #f1f5f9; padding-top: 14px;">' +
+        (!isInstalled ? 
+          '<button class="btn btn-install-host" onclick="closeDetailModal(); doInstall(\'' + plugin.id + '\', \'' + plugin.source + '\')">' +
+          '⚡ 立即本地装载' +
+          '</button>' +
+          '<button class="btn btn-desktop-scheme" onclick="closeDetailModal(); installPluginToDesktop({' +
+          'id: \'' + plugin.id + '\',' +
+          'name: \'' + plugin.name.replace(/'/g, "\\'") + '\',' +
+          'version: \'' + plugin.version + '\',' +
+          'repo: \'' + (plugin.repo || plugin.source) + '\'' +
+          '})">' +
+          '🚀 唤起桌面端' +
+          '</button>'
+          :
+          '<span class="btn btn-installed">✅ 已装载在本地</span>' +
+          '<button class="btn btn-toggle" onclick="closeDetailModal(); doToggle(\'' + plugin.id + '\', ' + (!isEnabled) + ')">' +
+          (isEnabled ? '⏸️ 停用' : '▶️ 启用') +
+          '</button>' +
+          '<button class="btn btn-uninstall" onclick="closeDetailModal(); doUninstall(\'' + plugin.id + '\')">🗑️ 卸载</button>'
+        ) +
+        '<button class="btn btn-detail" onclick="closeDetailModal()">关闭</button>' +
+        '</div>';
+
+      document.getElementById('detailModal').classList.add('active');
+    };
+
+    window.closeDetailModal = function() {
+      document.getElementById('detailModal').classList.remove('active');
+    };
+
+    // 系统级 dsh:// 唤起安装
+    window.installPluginToDesktop = function(plugin) {
+      const params = new URLSearchParams({
+        id: plugin.id,
+        name: plugin.name,
+        version: plugin.version || 'latest',
+        repo: plugin.repo || plugin.id,
+        permissions: plugin.permissions || '网络访问, 本地文件读取',
+        downloadUrl: plugin.downloadUrl || '',
+      });
+
+      const deepLink = 'dsh://plugin/install?' + params.toString();
+      appendLog('>>> 正在通过系统协议唤起桌面端: ' + deepLink, 'highlight');
+
+      const iframe = document.createElement('iframe');
+      iframe.style.display = 'none';
+      iframe.src = deepLink;
+      document.body.appendChild(iframe);
+      setTimeout(() => document.body.removeChild(iframe), 2500);
+
+      terminalDrawer.classList.add('open');
+      appendLog('🚀 已发送系统级拉起指令！若您已安装桌面端，系统将弹窗确认安装。', 'success');
+    };
+
+    // 本地内置装载 (SSE)
+    window.doInstall = function(pluginId, source) {
+      terminalDrawer.classList.add('open');
+      document.getElementById('terminalBadge').style.display = 'inline';
+      document.getElementById('terminalBadge').textContent = '正在安装 ' + pluginId;
+      appendLog('>>> 发起宿主内置装载: ' + pluginId + ' (源: ' + source + ')', 'highlight');
+
+      const evtSource = new EventSource('/api/market/install?id=' + encodeURIComponent(pluginId) + '&source=' + encodeURIComponent(source));
+
+      evtSource.onmessage = function(e) {
+        try {
+          const data = JSON.parse(e.data);
+          if (data.type === 'log') appendLog(data.message);
+          else if (data.type === 'success') {
+            appendLog(data.message, 'success');
+            evtSource.close();
+            document.getElementById('terminalBadge').style.display = 'none';
+            refreshInstalled();
+          } else if (data.type === 'error') {
+            appendLog(data.message, 'error');
+            evtSource.close();
+            document.getElementById('terminalBadge').style.display = 'none';
+          }
+        } catch (err) {
+          appendLog(e.data);
+        }
+      };
+
+      evtSource.onerror = function() {
+        appendLog('⚠️ 进程执行完毕或连接结束', 'normal');
+        evtSource.close();
+        document.getElementById('terminalBadge').style.display = 'none';
+        refreshInstalled();
+      };
+    };
+
+    // 启用/停用切换
+    window.doToggle = async function(pluginId, enabled) {
+      appendLog('>>> 切换 ' + pluginId + ' -> ' + (enabled ? '启用' : '停用'), 'highlight');
+      try {
+        const res = await fetch('/api/market/toggle', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id: pluginId, enabled })
+        });
+        const data = await res.json();
+        if (data.success) {
+          appendLog('✅ ' + pluginId + ' 状态已更新，DSH 补丁生效！', 'success');
+          refreshInstalled();
+        } else {
+          appendLog('❌ 更新失败: ' + data.error, 'error');
+        }
+      } catch (err) {
+        appendLog('❌ 操作异常: ' + err.message, 'error');
+      }
+    };
+
+    // 卸载插件
+    window.doUninstall = async function(pluginId) {
+      if (!confirm('确定要卸载插件 ' + pluginId + ' 吗？')) return;
+      terminalDrawer.classList.add('open');
+      appendLog('>>> 发起卸载: ' + pluginId + '...', 'highlight');
+
+      try {
+        const res = await fetch('/api/market/uninstall', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id: pluginId })
+        });
+        const data = await res.json();
+        if (data.success) {
+          appendLog('✅ ' + pluginId + ' 卸载指令完成', 'success');
+          refreshInstalled();
+        } else {
+          appendLog('❌ 卸载异常: ' + data.error, 'error');
+        }
+      } catch (err) {
+        appendLog('❌ 请求失败: ' + err.message, 'error');
+      }
+    };
+
+    async function refreshInstalled() {
+      try {
+        const res = await fetch('/api/market/installed');
+        if (res.ok) {
+          const d = await res.json();
+          installedMap = d.installed || {};
+          render();
+          if (typeof renderLocalManagerList === "function") renderLocalManagerList();
+        }
+      } catch (e) {}
+    }
+
+    // 协议徽章弹窗
+    window.openBadgeModal = async function(pluginId) {
+      const plugin = allPlugins.find(p => p.id === pluginId);
+      if (!plugin) return;
+
+      const params = {
+        id: plugin.id,
+        name: plugin.name,
+        version: plugin.version,
+        repo: plugin.repo || plugin.source,
+        permissions: plugin.permissions || '网络访问, 本地文件读取',
+        downloadUrl: plugin.downloadUrl || ''
+      };
+
+      const res = await fetch('/api/market/protocol/build', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(params)
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        document.getElementById('modalTitle').textContent = '🔗 ' + plugin.name + ' · 一键协议与徽章';
+        document.getElementById('schemeCode').textContent = data.url;
+        document.getElementById('htmlCode').textContent = data.htmlBadge;
+        document.getElementById('mdCode').textContent = data.markdownBadge;
+        document.getElementById('badgeModal').classList.add('active');
+      }
+    };
+
+    window.openProtocolInspector = function() {
+      const testUrl = prompt('请输入要测试唤起的 dsh:// 协议直链:', 'dsh://plugin/install?id=open-design&name=%E6%89%93%E5%BC%80%20Design&version=1.0.0&repo=nexu-io/open-design');
+      if (!testUrl) return;
+
+      const iframe = document.createElement('iframe');
+      iframe.style.display = 'none';
+      iframe.src = testUrl;
+      document.body.appendChild(iframe);
+      setTimeout(() => document.body.removeChild(iframe), 2500);
+
+      terminalDrawer.classList.add('open');
+      appendLog('🚀 触发测试协议: ' + testUrl, 'highlight');
+    };
+
+    window.closeModal = function() {
+      document.getElementById('badgeModal').classList.remove('active');
+    };
+
+    window.copySnippet = function(id) {
+      const text = document.getElementById(id).textContent;
+      navigator.clipboard.writeText(text);
+      appendLog('📋 已复制到剪贴板: ' + text.slice(0, 30) + '...', 'success');
+    };
+
+    // 榜单切换事件
+    rankTabs.addEventListener('click', (e) => {
+      const btn = e.target.closest('.rank-tab-btn');
+      if (!btn) return;
+      document.querySelectorAll('.rank-tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentRank = btn.dataset.rank;
+      const banner = document.getElementById("installedBanner");
+      if (banner) banner.style.display = currentRank === "installed" ? "flex" : "none";
+      render();
+    });
+
+    // 分类切换事件
+    categoriesBar.addEventListener('click', (e) => {
+      const btn = e.target.closest('.category-btn');
+      if (!btn) return;
+      document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentCategory = btn.dataset.category;
+      render();
+    });
+
+    // 搜索事件与清除
+    searchInput.addEventListener('input', (e) => {
+      currentSearch = e.target.value.trim();
+      searchClear.style.display = currentSearch ? 'block' : 'none';
+      render();
+    });
+
+    window.clearSearch = function() {
+      searchInput.value = '';
+      currentSearch = '';
+      searchClear.style.display = 'none';
+      render();
+    };
+
+    
+    // 本地插件管理与批量彻底卸载控制逻辑
+    window.openLocalManagerModal = function() {
+      document.getElementById('localManagerModal').classList.add('active');
+      renderLocalManagerList();
+    };
+
+        // 挂载到全局 window 供 HTML inline 事件直接调用
+    window.toggleSelectAllLocal = toggleSelectAllLocal;
+    window.updateLocalSelectionState = updateLocalSelectionState;
+    window.filterLocalPluginsList = filterLocalPluginsList;
+    window.doSingleCleanUninstall = doSingleCleanUninstall;
+    window.executeBatchCleanUninstall = executeBatchCleanUninstall;
+    window.executeCleanUninstallAction = executeCleanUninstallAction;
+
+    window.closeLocalManagerModal = function() {
+      document.getElementById('localManagerModal').classList.remove('active');
+    };
+
+    function updateLocalCountBadges() {
+      const keys = Object.keys(installedMap || {});
+      const count = keys.length;
+      const badge = document.getElementById('localCountBadge');
+      if (badge) badge.textContent = count;
+
+      const bannerCount = document.getElementById('installedBannerCount');
+      if (bannerCount) bannerCount.textContent = count;
+
+      const footerText = document.getElementById('localTotalFooterText');
+      if (footerText) footerText.textContent = '共检测到 ' + count + ' 款本地已装载插件';
+    }
+    window.updateLocalCountBadges = updateLocalCountBadges;
+
+    function renderLocalManagerList(filterText) {
+      updateLocalCountBadges();
+      const container = document.getElementById('localPluginsList');
+      if (!container) return;
+
+      const keys = Object.keys(installedMap || {});
+
+      let items = Object.values(installedMap || {});
+
+      if (filterText && filterText.trim()) {
+        const q = filterText.trim().toLowerCase();
+        items = items.filter(p => {
+          return (p.id && p.id.toLowerCase().includes(q)) ||
+                 (p.displayName && p.displayName.toLowerCase().includes(q)) ||
+                 (p.path && p.path.toLowerCase().includes(q)) ||
+                 (p.description && p.description.toLowerCase().includes(q));
+        });
+      }
+
+      if (items.length === 0) {
+        container.innerHTML = '<div style="text-align: center; padding: 40px; color: #94a3b8; font-size: 13px;">' +
+          (keys.length === 0 ? '📦 当前工作区未装载任何第三方本地插件' : '🔍 没有找到匹配条件的本地插件') +
+          '</div>';
+        updateLocalSelectionState();
+        return;
+      }
+
+      container.innerHTML = items.map(p => {
+        const isCore = p.id === 'dsh-stream-market';
+        const isEnabled = p.enabled !== false;
+        const iconSvg = (typeof LUCIDE_ICONS !== 'undefined' && LUCIDE_ICONS.package) || '📦';
+        const isLocal = p.isLocalLink || (p.source && p.source.startsWith('file:'));
+
+        return '<div class="local-plugin-row" id="row_' + p.id.replace(/[^a-zA-Z0-9_-]/g, '_') + '">' +
+          '<input type="checkbox" class="local-plugin-cb" data-id="' + p.id + '" onchange="updateLocalSelectionState()" ' + (isCore ? 'disabled title="市场核心插件受保护"' : '') + '>' +
+          '<div class="local-plugin-icon-wrap">' + iconSvg + '</div>' +
+          '<div class="local-plugin-info">' +
+            '<div class="local-plugin-title-row">' +
+              '<span class="local-plugin-name">' + escapeHtml(p.displayName || p.name || p.id) + '</span>' +
+              '<span class="local-plugin-id">' + escapeHtml(p.id) + '</span>' +
+              '<span class="version-tag">v' + escapeHtml(p.version || 'latest') + '</span>' +
+              (isEnabled ? '<span class="badge-status-on">🟢 运行中</span>' : '<span class="badge-status-off">⚪ 已停用</span>') +
+              (isLocal ? '<span class="badge-link">📁 本地工程</span>' : '') +
+            '</div>' +
+            (p.description ? '<div class="local-plugin-desc" title="' + escapeHtml(p.description) + '">' + escapeHtml(p.description) + '</div>' : '') +
+            '<div class="local-plugin-meta-row">' +
+              '<span class="local-plugin-path-text" title="' + escapeHtml(p.path || '') + '">路径: ' + escapeHtml(p.path || p.id) + '</span>' +
+            '</div>' +
+          '</div>' +
+          '<div class="local-plugin-actions">' +
+            '<button class="btn btn-toggle" onclick="doToggle(\'' + p.id + '\', ' + (!isEnabled) + ')" title="热启停切换">' +
+              (isEnabled ? '⏸️ 停用' : '▶️ 启用') +
+            '</button>' +
+            (!isCore ? 
+              '<button class="btn btn-uninstall" onclick="doSingleCleanUninstall(\'' + p.id + '\', \'' + escapeHtml(p.displayName || p.id) + '\')" title="彻底粉碎并清理">' +
+                '🗑️ 彻底卸载' +
+              '</button>' : 
+              '<span style="font-size: 11px; color: #94a3b8; padding: 4px 8px;">(核心保护)</span>'
+            ) +
+          '</div>' +
+        '</div>';
+      }).join('');
+
+      updateLocalSelectionState();
+    };
+
+    function toggleSelectAllLocal(checked) {
+    }
+    window.toggleSelectAllLocal = toggleSelectAllLocal;
+    function toggleSelectAllLocal_real(checked) {
+      const cbs = document.querySelectorAll('.local-plugin-cb:not(:disabled)');
+      cbs.forEach(cb => cb.checked = checked);
+      updateLocalSelectionState();
+    };
+
+    function updateLocalSelectionState() {
+      const cbs = document.querySelectorAll('.local-plugin-cb:checked');
+      const count = cbs.length;
+      const badge = document.getElementById('selectedLocalCountBadge');
+      if (badge) badge.textContent = '已选 ' + count + ' 项';
+
+      const btn = document.getElementById('btnBatchUninstall');
+      if (btn) {
+        btn.disabled = count === 0;
+        btn.innerHTML = '<span>🔥 彻底卸载所选 (' + count + ')</span>';
+      }
+
+      // 高亮选中的行
+      document.querySelectorAll('.local-plugin-row').forEach(row => {
+        const cb = row.querySelector('.local-plugin-cb');
+        if (cb && cb.checked) {
+          row.classList.add('selected');
+        } else {
+          row.classList.remove('selected');
+        }
+      });
+    };
+
+    function filterLocalPluginsList() {
+      const q = document.getElementById('localFilterInput').value;
+      renderLocalManagerList(q);
+    };
+
+    function doSingleCleanUninstall(pluginId, pluginName) {
+      const ok = confirm('⚠️ 确定要彻底卸载并清理本地插件「' + (pluginName || pluginId) + '」吗？\n\n该操作将：\n1. 清除 cordis.patch.yml 规则与状态\n2. 从 package.json 依赖与 bundles 中永久移除\n3. 物理粉碎 node_modules 目录与残留代码\n4. 保证本地 0 垃圾残留！');
+      if (!ok) return;
+
+      executeCleanUninstallAction([pluginId]);
+    };
+
+    function executeBatchCleanUninstall() {
+      const cbs = document.querySelectorAll('.local-plugin-cb:checked');
+      const ids = Array.from(cbs).map(cb => cb.dataset.id).filter(Boolean);
+      if (!ids.length) return;
+
+      const ok = confirm('⚠️ 危险操作确认：\n\n确定要彻底批量粉碎并卸载选中的 ' + ids.length + ' 个本地插件吗？\n\n待卸载插件：\n' + ids.join('\n') + '\n\n此操作不可逆，将彻底删除对应配置与代码文件！');
+      if (!ok) return;
+
+      executeCleanUninstallAction(ids);
+    };
+
+    function executeCleanUninstallAction(ids) {
+      const cleanConfig = document.getElementById('optCleanConfig') ? document.getElementById('optCleanConfig').checked : true;
+      const cleanFiles = document.getElementById('optCleanFiles') ? document.getElementById('optCleanFiles').checked : true;
+      const cleanSource = document.getElementById('optCleanSource') ? document.getElementById('optCleanSource').checked : false;
+
+      terminalDrawer.classList.add('open');
+      appendLog('>>> 🚀 启动深度彻底卸载管道 (共 ' + ids.length + ' 个目标)...', 'highlight');
+
+      const params = new URLSearchParams({
+        stream: '1',
+        ids: ids.join(','),
+        cleanConfig: String(cleanConfig),
+        cleanFiles: String(cleanFiles),
+        cleanSource: String(cleanSource)
+      });
+
+      const evtSource = new EventSource('/api/market/clean-uninstall?' + params.toString());
+
+      evtSource.onmessage = function(e) {
+        try {
+          const data = JSON.parse(e.data);
+          if (data.type === 'log') appendLog(data.message);
+          else if (data.type === 'success') appendLog(data.message, 'success');
+          else if (data.type === 'error') appendLog(data.message, 'error');
+        } catch (err) {
+          appendLog(e.data);
+        }
+      };
+
+      evtSource.onerror = function() {
+        appendLog('✅ 批量彻底卸载事务执行完毕，正在刷新本地环境...', 'success');
+        evtSource.close();
+        refreshInstalled();
+      };
+    };
+
+    window.doRescueBundles = async function() {
+      terminalDrawer.classList.add('open');
+      appendLog('>>> 🚑 正在进行 DSH 运行时深度自愈与 bundle 完整性体检...', 'highlight');
+      try {
+        const res = await fetch('/api/market/rescue', { method: 'POST' });
+        const data = await res.json();
+        if (data.success) {
+          appendLog('✅ ' + data.message, 'success');
+          alert('🎉 ' + data.message + '\n\n已成功杜绝 profile bundle 缺少 dsh.bundle 的启动崩溃隐患！');
+          refreshInstalled();
+        } else {
+          appendLog('❌ 自愈失败: ' + data.error, 'error');
+        }
+      } catch (err) {
+        appendLog('❌ 请求异常: ' + err.message, 'error');
+      }
+    };
+
+    init();
   </script>
 </body>
 </html>

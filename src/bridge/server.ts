@@ -71,11 +71,17 @@ export class MarketBridgeServer {
       return
     }
 
-    // 4. 插件生态库目录检索
+    // 4. 插件生态库目录检索 (纯实时动态官网同步)
     if (pathname === '/api/market/catalog') {
-      const plugins = await fetchPluginCatalog(this.config.hubUrl)
-      res.writeHead(200, { 'Content-Type': 'application/json' })
-      res.end(JSON.stringify({ plugins }))
+      try {
+        const force = parsedUrl.searchParams.get('force') === 'true'
+        const plugins = await fetchPluginCatalog(this.config.hubUrl, force)
+        res.writeHead(200, { 'Content-Type': 'application/json' })
+        res.end(JSON.stringify({ plugins }))
+      } catch (err: any) {
+        res.writeHead(500, { 'Content-Type': 'application/json' })
+        res.end(JSON.stringify({ error: err.message, plugins: [] }))
+      }
       return
     }
 

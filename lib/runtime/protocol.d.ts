@@ -20,7 +20,7 @@ export declare function generateHtmlBadge(params: DshProtocolInstallParams): str
  */
 export declare function generateMarkdownBadge(params: DshProtocolInstallParams): string;
 /**
- * 根据协议参数执行本地装载流程
+ * 根据协议参数执行一键安装流程
  */
 export declare function executeProtocolInstall(params: DshProtocolInstallParams, profile?: string): EventEmitter;
 //# sourceMappingURL=protocol.d.ts.map

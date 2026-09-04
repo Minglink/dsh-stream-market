@@ -112,7 +112,7 @@ export function generateMarkdownBadge(params: DshProtocolInstallParams): string 
 }
 
 /**
- * 根据协议参数执行本地装载流程
+ * 根据协议参数执行一键安装流程
  */
 export function executeProtocolInstall(params: DshProtocolInstallParams, profile: string = 'web'): EventEmitter {
   // 确定实际拉取源：

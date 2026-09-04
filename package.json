@@ -1,0 +1,58 @@
+{
+  "name": "dsh-stream-market",
+  "version": "1.0.0",
+  "description": "DeepSeek Harness 内置可视化插件市场 — 浏览、搜索、一键安装、热切换与全生命周期管理",
+  "type": "module",
+  "main": "./index.js",
+  "types": "./lib/index.d.ts",
+  "exports": {
+    ".": "./index.js",
+    "./client": "./client.js",
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./package.json": "./package.json"
+  },
+  "bin": {
+    "dsh-market-standalone": "./lib/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc -w",
+    "start": "node lib/index.js"
+  },
+  "keywords": [
+    "deepseek",
+    "harness",
+    "dsh",
+    "dsh-plugin",
+    "marketplace",
+    "stream-hub",
+    "plugin-manager"
+  ],
+  "author": "MingLin <3384433169@qq.com>",
+  "license": "MIT",
+  "dependencies": {
+    "js-yaml": "^4.1.0"
+  },
+  "devDependencies": {
+    "@types/js-yaml": "^4.0.9",
+    "@types/node": "^20.11.0",
+    "typescript": "^5.3.3"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dsh": {
+    "id": "dsh-stream-market",
+    "name": "Stream 插件市场",
+    "version": "1.0.0",
+    "repo": "dsh-stream-market",
+    "permissions": "网络访问, 本地环境执行, 扩展管理器",
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "immediately": true
+    }
+  }
+}

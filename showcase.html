@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DeepSeek Harness 插件市场 — 极速秒开 · 官方 dsh:// 联动 · 深度本地管理</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
+  <style>
+    :root {
+      --primary: #0284c7;
+      --primary-hover: #0369a1;
+      --primary-light: #e0f2fe;
+      --accent: #2563eb;
+      --accent-gradient: linear-gradient(135deg, #0284c7 0%, #2563eb 50%, #4f46e5 100%);
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --border: #e2e8f0;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+      --shadow-md: 0 10px 30px -10px rgba(2, 132, 199, 0.12), 0 4px 6px -2px rgba(0,0,0,0.03);
+      --shadow-lg: 0 20px 40px -15px rgba(2, 132, 199, 0.18);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif;
+      background-color: var(--bg);
+      color: var(--text-main);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* 顶部导航 */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 24px;
+    }
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--text-main);
+    }
+    .brand-icon {
+      width: 36px;
+      height: 36px;
+      background: var(--accent-gradient);
+      color: white;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
+    }
+    .brand-text h1 {
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+    .brand-text span {
+      font-size: 11px;
+      color: var(--text-muted);
+      display: block;
+    }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .nav-badge {
+      background: #eff6ff;
+      color: #2563eb;
+      border: 1px solid #bfdbfe;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .btn-github {
+      background: #0f172a;
+      color: white;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-github:hover {
+      background: #1e293b;
+      transform: translateY(-1px);
+    }
+
+    /* Hero 区域 */
+    .hero {
+      padding: 80px 24px 60px;
+      text-align: center;
+      position: relative;
+      background: radial-gradient(circle at 50% 20%, rgba(224, 242, 254, 0.6) 0%, transparent 70%);
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      background: white;
+      border: 1px solid #bae6fd;
+      border-radius: 30px;
+      font-size: 13px;
+      color: #0284c7;
+      font-weight: 600;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 14px rgba(2, 132, 199, 0.08);
+    }
+    .hero-title {
+      font-size: 46px;
+      font-weight: 800;
+      line-height: 1.25;
+      letter-spacing: -1px;
+      color: #0f172a;
+      max-width: 860px;
+      margin: 0 auto 20px;
+    }
+    .hero-title .gradient-text {
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero-desc {
+      font-size: 18px;
+      color: #475569;
+      max-width: 680px;
+      margin: 0 auto 36px;
+      line-height: 1.6;
+    }
+    .hero-actions {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 40px;
+    }
+    .btn-primary {
+      background: var(--accent-gradient);
+      color: white;
+      padding: 14px 28px;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      text-decoration: none;
+      box-shadow: 0 10px 24px -6px rgba(2, 132, 199, 0.4);
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      border: none;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 28px -6px rgba(2, 132, 199, 0.5);
+    }
+    .btn-secondary {
+      background: white;
+      color: #334155;
+      border: 1px solid #cbd5e1;
+      padding: 14px 26px;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-secondary:hover {
+      background: #f8fafc;
+      border-color: #94a3b8;
+      transform: translateY(-2px);
+    }
+
+    /* 交互式 Mockup 预览卡片 */
+    .mockup-container {
+      max-width: 1080px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 18px;
+      border: 1px solid #cbd5e1;
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+      position: relative;
+    }
+    .mockup-header {
+      background: #f1f5f9;
+      padding: 12px 20px;
+      border-bottom: 1px solid #e2e8f0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .mockup-dots {
+      display: flex;
+      gap: 6px;
+    }
+    .mockup-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+    .dot-red { background: #ef4444; }
+    .dot-yellow { background: #f59e0b; }
+    .dot-green { background: #10b981; }
+    .mockup-title {
+      font-size: 13px;
+      color: #64748b;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .mockup-body {
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      min-height: 480px;
+      background: #ffffff;
+    }
+    .mockup-sidebar {
+      background: #f8fafc;
+      border-right: 1px solid #e2e8f0;
+      padding: 20px 14px;
+    }
+    .sidebar-category {
+      font-size: 11px;
+      font-weight: 700;
+      color: #94a3b8;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      padding-left: 10px;
+    }
+    .sidebar-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      color: #475569;
+      margin-bottom: 4px;
+      cursor: pointer;
+    }
+    .sidebar-item.active {
+      background: #e0f2fe;
+      color: #0284c7;
+      font-weight: 700;
+    }
+    .mockup-main {
+      padding: 24px;
+      background: #fcfdfe;
+    }
+    .mockup-search-row {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .mockup-search-input {
+      flex: 1;
+      padding: 10px 16px;
+      border-radius: 8px;
+      border: 1px solid #cbd5e1;
+      font-size: 13px;
+      outline: none;
+      background: white;
+    }
+    .mockup-badge-bar {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .mockup-chip {
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+      background: #f1f5f9;
+      color: #475569;
+      cursor: pointer;
+    }
+    .mockup-chip.active {
+      background: #0284c7;
+      color: white;
+    }
+    .mockup-card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 16px;
+    }
+    .mockup-plugin-card {
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+      transition: all 0.2s;
+    }
+    .mockup-plugin-card:hover {
+      border-color: #7dd3fc;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(2, 132, 199, 0.08);
+    }
+    .card-top {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .card-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: #f0f9ff;
+      color: #0284c7;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+    .card-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #0f172a;
+    }
+    .card-desc {
+      font-size: 12px;
+      color: #64748b;
+      margin-bottom: 12px;
+      height: 34px;
+      overflow: hidden;
+      line-height: 1.4;
+    }
+    .card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid #f8fafc;
+      padding-top: 10px;
+    }
+    .btn-mock-install {
+      background: #0284c7;
+      color: white;
+      border: none;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    /* 4 大核心支柱特性 */
+    .features-section {
+      max-width: 1200px;
+      margin: 90px auto;
+      padding: 0 24px;
+    }
+    .section-title-area {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+    .section-tag {
+      color: #0284c7;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .section-heading {
+      font-size: 34px;
+      font-weight: 800;
+      color: #0f172a;
+      letter-spacing: -0.5px;
+    }
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 24px;
+    }
+    .feature-card {
+      background: white;
+      padding: 30px;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+      transition: all 0.2s;
+    }
+    .feature-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-md);
+      border-color: #bae6fd;
+    }
+    .feature-icon-wrap {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: #e0f2fe;
+      color: #0284c7;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      margin-bottom: 18px;
+    }
+    .feature-card h3 {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: #0f172a;
+    }
+    .feature-card p {
+      font-size: 14px;
+      color: #64748b;
+      line-height: 1.6;
+    }
+
+    /* 在线协议生成器互动演示 */
+    .protocol-section {
+      max-width: 1000px;
+      margin: 80px auto;
+      padding: 40px;
+      background: white;
+      border-radius: 20px;
+      border: 1px solid #cbd5e1;
+      box-shadow: var(--shadow-md);
+    }
+    .protocol-title {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: #0f172a;
+    }
+    .protocol-desc {
+      font-size: 14px;
+      color: #64748b;
+      margin-bottom: 24px;
+    }
+    .generator-form {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .form-group label {
+      font-size: 12px;
+      font-weight: 600;
+      color: #334155;
+    }
+    .form-group input {
+      padding: 10px 14px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 13px;
+      outline: none;
+    }
+    .form-group input:focus {
+      border-color: #0284c7;
+      box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.1);
+    }
+    .output-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 16px;
+      margin-top: 14px;
+    }
+    .output-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: #64748b;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .output-code {
+      font-family: Consolas, Monaco, "Courier New", monospace;
+      font-size: 12px;
+      color: #0f172a;
+      word-break: break-all;
+      background: white;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #e2e8f0;
+    }
+    .btn-copy-code {
+      margin-top: 10px;
+      padding: 6px 14px;
+      border-radius: 6px;
+      background: #e0f2fe;
+      color: #0284c7;
+      font-weight: 600;
+      font-size: 12px;
+      border: 1px solid #bae6fd;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-copy-code:hover {
+      background: #0284c7;
+      color: white;
+    }
+
+    /* 底部版权 */
+    footer {
+      border-top: 1px solid #e2e8f0;
+      padding: 40px 24px;
+      text-align: center;
+      background: white;
+      margin-top: 80px;
+    }
+    .footer-text {
+      font-size: 13px;
+      color: #64748b;
+    }
+    .footer-text a {
+      color: #0284c7;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    @media (max-width: 768px) {
+      .hero-title { font-size: 32px; }
+      .mockup-body { grid-template-columns: 1fr; }
+      .mockup-sidebar { display: none; }
+      .generator-form { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 头部导航 -->
+  <header>
+    <div class="nav-container">
+      <a href="#" class="brand">
+        <div class="brand-icon">⚡</div>
+        <div class="brand-text">
+          <h1>dsh-stream-market</h1>
+          <span>DeepSeek Harness 内置插件市场</span>
+        </div>
+      </a>
+      <div class="nav-links">
+        <a href="https://github.com/topics/dsh-plugin" target="_blank" class="nav-badge">
+          🏷️ dsh-plugin 社区
+        </a>
+        <a href="https://github.com/Minglink/dsh-stream-market" target="_blank" class="btn-github">
+          ⭐ GitHub 仓库
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero 介绍区域 -->
+  <section class="hero">
+    <div class="hero-badge">
+      <span>🚀 赋能 DeepSeek Harness 微内核扩展生态</span>
+    </div>
+    <h1 class="hero-title">
+      让开源插件生态，成为 <br><span class="gradient-text">DeepSeek Harness</span> 的第一生产力
+    </h1>
+    <p class="hero-desc">
+      专为 DeepSeek Harness (DSH) 打造的内置可视化插件市场。设置左侧栏原生注入、0ms 极速秒开、官方 <code>dsh://</code> 协议联动、深度本地扩展生命周期管理与彻底粉碎卸载。
+    </p>
+    <div class="hero-actions">
+      <a href="dsh://plugin/install?id=dsh-stream-market&name=Stream%E6%8F%92%E4%BB%B6%E5%B8%82%E5%9C%BA&version=1.0.0&repo=Minglink/dsh-stream-market&permissions=%E7%BD%91%E7%BB%9C%E8%AE%BF%E9%97%AE,%20%E6%9C%AC%E5%9C%B0%E7%8E%AF%E5%A2%83%E6%89%A7%E8%A1%8C,%20%E6%89%A9%E5%B1%95%E7%AE%A1%E7%90%86%E5%99%A8" class="btn-primary" title="点击直接拉起官方桌面端自动化安装">
+        ⚡ 唤起桌面端一键安装 (dsh://)
+      </a>
+      <a href="http://127.0.0.1:18899/" target="_blank" class="btn-secondary">
+        🖥️ 打开本地控制台 (18899)
+      </a>
+      <a href="https://github.com/Minglink/dsh-stream-market" target="_blank" class="btn-secondary">
+        📖 查看 GitHub 源码
+      </a>
+    </div>
+
+    <!-- 交互式 UI 视窗展示 -->
+    <div class="mockup-container">
+      <div class="mockup-header">
+        <div class="mockup-dots">
+          <div class="mockup-dot dot-red"></div>
+          <div class="mockup-dot dot-yellow"></div>
+          <div class="mockup-dot dot-green"></div>
+        </div>
+        <div class="mockup-title">
+          <span>DeepSeek Harness — 系统设置 · 插件市场</span>
+        </div>
+        <div style="font-size: 11px; color: #10b981; font-weight: 600;">
+          🟢 DSH: web · 就绪
+        </div>
+      </div>
+      <div class="mockup-body">
+        <!-- 侧边栏 -->
+        <div class="mockup-sidebar">
+          <div class="sidebar-category">系统设置</div>
+          <div class="sidebar-item">⚙️ 通用偏好</div>
+          <div class="sidebar-item">🧠 模型与推理</div>
+          <div class="sidebar-item">🔌 核心扩展</div>
+          <div class="sidebar-item active">⚡ 插件市场</div>
+          <div class="sidebar-item">📦 本地插件管理 (6)</div>
+        </div>
+        <!-- 主体列表 -->
+        <div class="mockup-main">
+          <div class="mockup-search-row">
+            <input type="text" class="mockup-search-input" placeholder="🔍 输入插件名称、ID、关键词搜索..." value="">
+          </div>
+          <div class="mockup-badge-bar">
+            <div class="mockup-chip active">🌟 综合推荐</div>
+            <div class="mockup-chip">🔥 热门总榜</div>
+            <div class="mockup-chip">⭐ 必装精选</div>
+            <div class="mockup-chip">⚡ 飙升新星</div>
+            <div class="mockup-chip">📦 本地已安装 (6)</div>
+          </div>
+          <div class="mockup-card-grid">
+            <div class="mockup-plugin-card">
+              <div class="card-top">
+                <div class="card-icon">⚡</div>
+                <div>
+                  <div class="card-title">无限三代 (Infinite Gen 2)</div>
+                  <div style="font-size: 11px; color: #0284c7;">v2.5.0 · 官方必装</div>
+                </div>
+              </div>
+              <div class="card-desc">彻底释放思考上限，解锁双通道深度推理与逻辑突破。</div>
+              <div class="card-footer">
+                <span style="font-size: 11px; color: #10b981; font-weight: 600;">✅ 已装载</span>
+                <button class="btn-mock-install" style="background: #e2e8f0; color: #475569;">配置</button>
+              </div>
+            </div>
+            <div class="mockup-plugin-card">
+              <div class="card-top">
+                <div class="card-icon">🎨</div>
+                <div>
+                  <div class="card-title">极致侧边栏 (Better Sidebar)</div>
+                  <div style="font-size: 11px; color: #0284c7;">v1.4.2 · UI增强</div>
+                </div>
+              </div>
+              <div class="card-desc">会话智能分组、置顶、历史沉降与快捷按键导航。</div>
+              <div class="card-footer">
+                <span style="font-size: 11px; color: #10b981; font-weight: 600;">✅ 已装载</span>
+                <button class="btn-mock-install" style="background: #e2e8f0; color: #475569;">配置</button>
+              </div>
+            </div>
+            <div class="mockup-plugin-card">
+              <div class="card-top">
+                <div class="card-icon">🐳</div>
+                <div>
+                  <div class="card-title">深鲸知识库 (Deep Whale)</div>
+                  <div style="font-size: 11px; color: #64748b;">v1.1.0 · RAG增强</div>
+                </div>
+              </div>
+              <div class="card-desc">无缝接入本地向量库与外部多源知识印证。</div>
+              <div class="card-footer">
+                <span style="font-size: 11px; color: #64748b;">⭐ 395 赞</span>
+                <button class="btn-mock-install">⚡ 本地装载</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4 大核心支柱特性 -->
+  <section class="features-section">
+    <div class="section-title-area">
+      <div class="section-tag">Key Pillars</div>
+      <h2 class="section-heading">四大企业级原生架构特性</h2>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon-wrap">⚡</div>
+        <h3>0ms 瞬时秒开架构</h3>
+        <p>预置官方精选离线高热度生态库。页面启动毫无延迟白屏，三路并行并发健康探测，网络异常即刻平滑自愈回退。</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon-wrap">🎨</div>
+        <h3>设置侧栏原生深度融合</h3>
+        <p>深度融入 DeepSeek Harness「系统设置」侧边栏，支持嵌入式微面板与沉浸式全屏大视窗无缝切换。</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon-wrap">📦</div>
+        <h3>本地插件深度清理与粉碎</h3>
+        <p>可视化呈现本地所有扩展。支持多选批量彻底粉碎卸载，同时净化 cordis.patch 补丁规则与本地源码，零垃圾残留。</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon-wrap">🔗</div>
+        <h3>官方 dsh:// 联动协议</h3>
+        <p>完整支持桌面端 dsh:// URI Scheme 规范。在任何网页或文档中点击即可一键拉起官方客户端进行原子化构建。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 交互式 dsh:// 协议生成演示 -->
+  <section class="protocol-section">
+    <h2 class="protocol-title">🔌 在线 dsh:// 协议与徽章生成器</h2>
+    <p class="protocol-desc">输入您的插件元数据，立即生成支持一键拉起官方桌面端安装的协议直链与 Markdown 徽章代码：</p>
+    
+    <div class="generator-form">
+      <div class="form-group">
+        <label>插件唯一 ID (id):</label>
+        <input type="text" id="inputPluginId" value="my-awesome-plugin" oninput="updateProtocolOutput()">
+      </div>
+      <div class="form-group">
+        <label>展示名称 (name):</label>
+        <input type="text" id="inputPluginName" value="我的高能插件" oninput="updateProtocolOutput()">
+      </div>
+      <div class="form-group">
+        <label>版本号 (version):</label>
+        <input type="text" id="inputPluginVer" value="1.0.0" oninput="updateProtocolOutput()">
+      </div>
+      <div class="form-group">
+        <label>GitHub 仓库 (repo):</label>
+        <input type="text" id="inputPluginRepo" value="user/my-awesome-plugin" oninput="updateProtocolOutput()">
+      </div>
+    </div>
+
+    <div class="output-box">
+      <div class="output-label">生成的 dsh:// 协议直链</div>
+      <div class="output-code" id="outputProtocolUrl"></div>
+      <button class="btn-copy-code" onclick="copyProtocolUrl()">📋 复制直链</button>
+      <a id="btnTestProtocol" href="#" class="btn-copy-code" style="text-decoration: none; margin-left: 8px;">🚀 本机测试拉起</a>
+    </div>
+
+    <div class="output-box">
+      <div class="output-label">生成的 README Markdown 徽章</div>
+      <div class="output-code" id="outputMarkdownBadge"></div>
+      <button class="btn-copy-code" onclick="copyMarkdownBadge()">📋 复制 Markdown 徽章</button>
+    </div>
+  </section>
+
+  <!-- 底部说明 -->
+  <footer>
+    <div class="footer-text">
+      DeepSeek Harness 官方插件生态社区 · <a href="https://github.com/topics/dsh-plugin" target="_blank">dsh-plugin GitHub Topic</a> · 基于 MIT License 开源
+      <div style="margin-top: 8px; color: #94a3b8; font-size: 12px;">
+        Designed & Maintained by <a href="https://github.com/Minglink" target="_blank">MinLinking (MingLink)</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    function updateProtocolOutput() {
+      const id = document.getElementById('inputPluginId').value.trim() || 'sample-plugin';
+      const name = document.getElementById('inputPluginName').value.trim() || 'Sample Plugin';
+      const ver = document.getElementById('inputPluginVer').value.trim() || '1.0.0';
+      const repo = document.getElementById('inputPluginRepo').value.trim() || 'org/sample-plugin';
+
+      const url = 'dsh://plugin/install?id=' + encodeURIComponent(id) +
+        '&name=' + encodeURIComponent(name) +
+        '&version=' + encodeURIComponent(ver) +
+        '&repo=' + encodeURIComponent(repo) +
+        '&permissions=' + encodeURIComponent('网络访问, 本地环境执行');
+
+      document.getElementById('outputProtocolUrl').textContent = url;
+      document.getElementById('btnTestProtocol').href = url;
+
+      const mdBadge = '[![一键装载到 DSH](https://img.shields.io/badge/DSH-一键安装%20' + encodeURIComponent(name) + '-0284c7?style=for-the-badge&logo=deepseek)](' + url + ')';
+      document.getElementById('outputMarkdownBadge').textContent = mdBadge;
+    }
+
+    function copyProtocolUrl() {
+      const text = document.getElementById('outputProtocolUrl').textContent;
+      navigator.clipboard.writeText(text).then(() => alert('已成功复制 dsh:// 协议直链！'));
+    }
+
+    function copyMarkdownBadge() {
+      const text = document.getElementById('outputMarkdownBadge').textContent;
+      navigator.clipboard.writeText(text).then(() => alert('已成功复制 Markdown 徽章代码！'));
+    }
+
+    updateProtocolOutput();
+  </script>
+</body>
+</html>

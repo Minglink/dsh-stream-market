@@ -1,0 +1,15 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_CURRENT_USER\Software\Classes\dsh]
+@="DeepSeek Harness Protocol"
+"URL Protocol"=""
+
+[HKEY_CURRENT_USER\Software\Classes\dsh\DefaultIcon]
+@="\"C:\\Users\\Administrator\\AppData\\Local\\Programs\\DeepSeek-Harness\\icon.ico\",0"
+
+[HKEY_CURRENT_USER\Software\Classes\dsh\shell]
+
+[HKEY_CURRENT_USER\Software\Classes\dsh\shell\open]
+
+[HKEY_CURRENT_USER\Software\Classes\dsh\shell\open\command]
+@="\"C:\\Users\\Administrator\\AppData\\Local\\Programs\\DeepSeek-Harness\\DeepSeek Harness.exe\" \"%1\""

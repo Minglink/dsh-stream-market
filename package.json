@@ -30,9 +30,7 @@
   ],
   "author": "MingLin <3384433169@qq.com>",
   "license": "MIT",
-  "dependencies": {
-    "js-yaml": "^4.1.0"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@types/js-yaml": "^4.0.9",
     "@types/node": "^20.11.0",

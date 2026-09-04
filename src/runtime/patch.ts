@@ -1,6 +1,6 @@
 import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
-import yaml from 'js-yaml'
+import yaml from './vendor/yaml.js'
 
 export interface PatchRow {
   id: string
